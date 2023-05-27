@@ -1,0 +1,137 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="create-rental-property-1.0.0" author="david">
+        <createTable tableName="rental_property">
+            <column name="id" type="BINARY(16)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="description" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="town" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="property_type_id" type="BINARY(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rent_amount" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="security_deposit_amount" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="area" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="number_of_bedrooms" type="TINYINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="floor_number" type="SMALLINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="number_of_floors" type="SMALLINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="construction_year" type="CHAR(4)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="energy_classification_id" type="BINARY(16)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="has_elevator" type="BIT(1)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="has_intercom" type="BIT(1)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="has_balcony" type="BIT(1)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="has_parking_space" type="BIT(1)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-property-type-1.0.1" author="david">
+        <createTable tableName="property_type">
+            <column name="id" type="BINARY(16)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="designation" type="VARCHAR(5)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-energy_classification-1.0.2" author="david">
+        <createTable tableName="energy_classification">
+            <column name="id" type="BINARY(16)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="designation" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add-fks-rental-property-1.0.3" author="david">
+        <addForeignKeyConstraint baseColumnNames="property_type_id"
+                                 baseTableName="rental_property"
+                                 constraintName="fk_rental_property_property_type"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="RESTRICT"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="property_type"
+                                 validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="energy_classification_id"
+                                 baseTableName="rental_property"
+                                 constraintName="fk_rental_property_energy_classification"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="RESTRICT"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="energy_classification"
+                                 validate="true"/>
+    </changeSet>
+
+    <changeSet id="create-rental-car-1.0.0" author="david">
+        <createTable tableName="rental_car">
+            <column name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="brand" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="model" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rent_amount" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="security_deposit_amount" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="number_of_seats" type="INT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="number_of_doors" type="INT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="has_air_conditioning" type="BIT(1)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
