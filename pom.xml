@@ -10,6 +10,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>rent-front-api</module>
+        <module>rent-api-properties</module>
     </modules>
 
     <properties>
