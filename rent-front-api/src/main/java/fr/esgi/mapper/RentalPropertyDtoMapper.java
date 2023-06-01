@@ -11,7 +11,7 @@ public class RentalPropertyDtoMapper {
 
     }
 
-    public RentalPropertyDtoResponse mapToDtoResponse(RentalProperty rentalProperty) {
+    public RentalPropertyDtoResponse mapToDto(RentalProperty rentalProperty) {
         return new RentalPropertyDtoResponse(
                 rentalProperty.address(),
                 rentalProperty.area(),
