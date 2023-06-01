@@ -1,6 +1,6 @@
 package fr.esgi.rent.mapper;
 
-import fr.esgi.rent.domain.RentalPropertyEntity;
+import fr.esgi.rent.entity.RentalPropertyEntity;
 import fr.esgi.rent.dto.response.RentalPropertyResponseDto;
 import org.junit.jupiter.api.Test;
 

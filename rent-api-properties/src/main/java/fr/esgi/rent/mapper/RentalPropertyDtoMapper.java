@@ -1,8 +1,8 @@
 package fr.esgi.rent.mapper;
 
-import fr.esgi.rent.domain.EnergyClassificationEntity;
-import fr.esgi.rent.domain.PropertyTypeEntity;
-import fr.esgi.rent.domain.RentalPropertyEntity;
+import fr.esgi.rent.entity.EnergyClassificationEntity;
+import fr.esgi.rent.entity.PropertyTypeEntity;
+import fr.esgi.rent.entity.RentalPropertyEntity;
 import fr.esgi.rent.dto.request.RentalPropertyRequestDto;
 import fr.esgi.rent.dto.response.RentalPropertyResponseDto;
 import org.springframework.stereotype.Component;

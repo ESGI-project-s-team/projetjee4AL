@@ -1,8 +1,8 @@
 package fr.esgi.rent.samples;
 
-import fr.esgi.rent.domain.EnergyClassificationEntity;
-import fr.esgi.rent.domain.PropertyTypeEntity;
-import fr.esgi.rent.domain.RentalPropertyEntity;
+import fr.esgi.rent.entity.EnergyClassificationEntity;
+import fr.esgi.rent.entity.PropertyTypeEntity;
+import fr.esgi.rent.entity.RentalPropertyEntity;
 
 import java.util.List;
 import java.util.UUID;

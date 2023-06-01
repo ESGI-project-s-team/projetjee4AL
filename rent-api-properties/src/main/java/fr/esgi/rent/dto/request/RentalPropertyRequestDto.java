@@ -16,11 +16,11 @@ public record RentalPropertyRequestDto(
         @NotNull int bedroomsCount,
         int floorNumber,
         int numberOfFloors,
-        @NotNull int constructionYear,
-        @NotNull String energyClassification,
-        @NotNull boolean hasElevator,
-        @NotNull boolean hasIntercom,
-        @NotNull boolean hasBalcony,
-        @NotNull boolean hasParkingSpace) {
+        int constructionYear,
+        String energyClassification,
+        boolean hasElevator,
+        boolean hasIntercom,
+        boolean hasBalcony,
+        boolean hasParkingSpace) {
 
 }

@@ -1,6 +1,6 @@
 package fr.esgi.rent.api;
 
-import fr.esgi.rent.domain.RentalPropertyEntity;
+import fr.esgi.rent.entity.RentalPropertyEntity;
 import fr.esgi.rent.dto.request.RentalPropertyRequestDto;
 import fr.esgi.rent.dto.response.RentalPropertyResponseDto;
 import fr.esgi.rent.exception.NotFoundRentalPropertyException;

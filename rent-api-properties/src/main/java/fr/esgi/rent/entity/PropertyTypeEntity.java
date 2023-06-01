@@ -1,4 +1,4 @@
-package fr.esgi.rent.domain;
+package fr.esgi.rent.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
