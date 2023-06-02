@@ -67,4 +67,30 @@ public class RentalPropertyResource {
         rentalPropertyRepository.save(rentalPropertyEntity);
     }
 
+    @DeleteMapping("/rental-properties/{id}")
+    public void deleteRentalProperty(@PathVariable String id) {
+        Optional<RentalPropertyEntity> optRentalPropertyEntity = rentalPropertyRepository.findById(UUID.fromString(id));
+        if (optRentalPropertyEntity.isPresent()) {
+            rentalPropertyRepository.deleteById(UUID.fromString(id));
+        } else {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND
+            );
+        }
+    }
+//patch only what is not null
+    @PatchMapping("/rental-properties/{id}")
+    public void patchRentalProperty(@PathVariable String id, @Valid @RequestBody RentalPropertyRequestDto rentalPropertyRequestDto) {
+        Optional<RentalPropertyEntity> optRentalPropertyEntity = rentalPropertyRepository.findById(UUID.fromString(id));
+        RentalPropertyEntity rentalPropertyEntity = rentalPropertyDtoMapper.mapToEntity(rentalPropertyRequestDto);
+        if (optRentalPropertyEntity.isPresent()) {
+            rentalPropertyEntity.setId(UUID.fromString(id));
+            rentalPropertyRepository.save(rentalPropertyEntity);
+        }else{
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND
+            );
+        }
+
+    }
 }
