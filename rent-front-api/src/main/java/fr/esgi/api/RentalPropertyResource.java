@@ -2,14 +2,15 @@ package fr.esgi.api;
 
 import fr.esgi.beans.PropertyType;
 import fr.esgi.beans.RentalProperty;
+import fr.esgi.dto.request.RentalPropertyDtoRequest;
+import fr.esgi.dto.request.RentalPropertyRequestPatchDto;
 import fr.esgi.dto.response.RentalPropertyDtoResponse;
-import fr.esgi.exception.NotFoundRentalPropertyException;
 import fr.esgi.mapper.RentalPropertyDtoMapper;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public class RentalPropertyResource {
                 new RentalProperty(2, "Maison à louer dans banlieue calme et proche du RER", "Champs-sur-Marne", "12 rue de la Pyramide", new PropertyType(2, "HOUSE"), 1050.9, 1400.9, 62.5, null, null, null, null, null, null, null, null, null)
         );
 
-        return Response.ok(rentals.stream().map(this.rentalPropertyDtoMapper::mapToDto).toList()).build();
+        return Response.ok(rentalPropertyDtoMapper.mapToDtoList(rentals)).build();
 
     }
 
@@ -58,6 +59,48 @@ public class RentalPropertyResource {
 
 
     }
+
+    @POST
+    public Response createRentalProperty(@Valid RentalPropertyDtoRequest rentalPropertyDtoRequest) {
+
+        RentalProperty rentalProperty = rentalPropertyDtoMapper.mapToBean(rentalPropertyDtoRequest);
+
+        return Response.status(Response.Status.CREATED).build();
+
+    }
+
+    @PUT
+    @Path("/{id}")
+    public Response updateRentalProperty(@PathParam("id") @Positive int id, @Valid RentalPropertyDtoRequest rentalPropertyDtoRequest) {
+
+        RentalProperty rentalProperty = rentalPropertyDtoMapper.mapToBean(rentalPropertyDtoRequest);
+
+        if (id != 2)
+            return Response.status(Response.Status.NOT_FOUND).build();
+
+        return Response.ok().build();
+
+    }
+
+    @PATCH
+    @Path("/{id}")
+    public Response patchRentalProperty(@PathParam("id") @Positive int id, @Valid RentalPropertyRequestPatchDto rentalPropertyRequestPatchDto) {
+
+        if (id != 2)
+            return Response.status(Response.Status.NOT_FOUND).build();
+
+        return Response.ok().build();
+
+    }
+
+    @DELETE
+    @Path("/{id}")
+    public Response deleteRentalProperty(@PathParam("id") @Positive int id) {
+
+        return Response.status(Response.Status.NO_CONTENT).build();
+
+    }
+
 
 }
 
