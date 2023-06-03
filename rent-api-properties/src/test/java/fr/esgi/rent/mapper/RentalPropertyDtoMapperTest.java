@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static fr.esgi.rent.samples.RentalPropertyDtoSample.oneRentalPropertyRequest;
 import static fr.esgi.rent.samples.RentalPropertyDtoSample.oneRentalPropertyResponse;
 import static fr.esgi.rent.samples.RentalPropertyEntitySample.oneRentalPropertyEntity;
 import static fr.esgi.rent.samples.RentalPropertyEntitySample.rentalPropertyEntities;
@@ -46,6 +47,14 @@ class RentalPropertyDtoMapperTest {
                                 1200.90,
                                 37.48)
                 );
+    }
+
+    //mapToEntity
+    @Test
+    void shouldMapToEntity() {
+        RentalPropertyDtoMapper rentalPropertyDtoMapper = new RentalPropertyDtoMapper();
+        RentalPropertyEntity rentalPropertyEntity = rentalPropertyDtoMapper.mapToEntity(oneRentalPropertyRequest());
+        assertThat(rentalPropertyEntity).isNotNull();
     }
 
 }
