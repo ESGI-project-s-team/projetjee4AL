@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -50,7 +49,7 @@ public class RentalPropertyEntity {
         this.hasParkingSpace = hasParkingSpace;
     }
 
-    public RentalPropertyEntity(UUID id,
+    public RentalPropertyEntity(Integer id,
                                 String description,
                                 String town,
                                 String address,
@@ -89,7 +88,7 @@ public class RentalPropertyEntity {
     @GeneratedValue
     @Id
     @Column(name = "id")
-    private UUID id;
+    private Integer id;
 
     @Column(name = "description")
     private String description;

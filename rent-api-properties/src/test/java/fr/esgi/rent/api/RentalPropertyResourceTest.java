@@ -73,30 +73,30 @@ class RentalPropertyResourceTest {
         RentalPropertyEntity rentalPropertyEntity = oneRentalPropertyEntity();
         RentalPropertyResponseDto rentalPropertyResponseDto = oneRentalPropertyResponse();
 
-        String id = "1a8ed763-928c-4155-bee9-fdbaaadc15f3";
+        String id = "1";
 
-        when(rentalPropertyRepository.findById(UUID.fromString(id))).thenReturn(Optional.of(rentalPropertyEntity));
+        when(rentalPropertyRepository.findById(Integer.parseInt(id))).thenReturn(Optional.of(rentalPropertyEntity));
         when(rentalPropertyDtoMapper.mapToDto(rentalPropertyEntity)).thenReturn(rentalPropertyResponseDto);
 
         mockMvc.perform(get("/rent-properties-api/rental-properties/{id}", id))
                 .andExpect(status().isOk())
                 .andExpect(content().json(readResource(rentalProperty)));
 
-        verify(rentalPropertyRepository).findById(UUID.fromString(id));
+        verify(rentalPropertyRepository).findById(Integer.parseInt(id));
         verify(rentalPropertyDtoMapper).mapToDto(rentalPropertyEntity);
         verifyNoMoreInteractions(rentalPropertyRepository, rentalPropertyDtoMapper);
     }
 
     @Test
     void givenNoExistentRentalPropertyId_shouldThrowNotFoundRentalPropertyException() throws Exception {
-        String id = "1a8ed763-928c-4155-bee9-fdbaaadc15f3";
+        String id = "1";
 
-        when(rentalPropertyRepository.findById(UUID.fromString(id))).thenReturn(Optional.empty());
+        when(rentalPropertyRepository.findById(Integer.parseInt(id))).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/rent-properties-api/rental-properties/{id}", id))
                 .andExpect(status().isNotFound());
 
-        verify(rentalPropertyRepository).findById(UUID.fromString(id));
+        verify(rentalPropertyRepository).findById(Integer.parseInt(id));
         verifyNoInteractions(rentalPropertyDtoMapper);
         verifyNoMoreInteractions(rentalPropertyRepository);
     }
@@ -127,15 +127,15 @@ class RentalPropertyResourceTest {
         RentalPropertyEntity rentalPropertyEntity = oneRentalPropertyEntity();
         RentalPropertyResponseDto rentalPropertyResponseDto = oneRentalPropertyResponse();
 
-        String id = "1a8ed763-928c-4155-bee9-fdbaaadc15f3";
+        String id = "1";
 
-        when(rentalPropertyRepository.findById(UUID.fromString(id))).thenReturn(Optional.of(rentalPropertyEntity));
+        when(rentalPropertyRepository.findById(Integer.parseInt(id))).thenReturn(Optional.of(rentalPropertyEntity));
         when(rentalPropertyDtoMapper.mapToDto(rentalPropertyEntity)).thenReturn(rentalPropertyResponseDto);
 
         mockMvc.perform(delete("/rent-properties-api/rental-properties/{id}", id))
                 .andExpect(status().isOk());
 
-        verify(rentalPropertyRepository).findById(UUID.fromString(id));
+        verify(rentalPropertyRepository).findById(Integer.parseInt(id));
     }
 
     @Test
@@ -144,9 +144,9 @@ class RentalPropertyResourceTest {
         RentalPropertyResponseDto rentalPropertyResponseDto = oneRentalPropertyResponse();
         RentalPropertyEntity rentalPropertyEntity = oneRentalPropertyEntity();
 
-        String id = "1a8ed763-928c-4155-bee9-fdbaaadc15f3";
+        String id = "1";
 
-        when(rentalPropertyRepository.findById(UUID.fromString(id))).thenReturn(Optional.of(rentalPropertyEntity));
+        when(rentalPropertyRepository.findById(Integer.parseInt(id))).thenReturn(Optional.of(rentalPropertyEntity));
         when(rentalPropertyDtoMapper.mapToDto(rentalPropertyEntity)).thenReturn(rentalPropertyResponseDto);
         when(rentalPropertyDtoMapper.mapToEntity(rentalPropertyRequestDto)).thenReturn(rentalPropertyEntity);
 
@@ -156,7 +156,7 @@ class RentalPropertyResourceTest {
                         .content(readResource(rentalPropertyRequest)))
                 .andExpect(status().isOk());
 
-        verify(rentalPropertyRepository).findById(UUID.fromString(id));
+        verify(rentalPropertyRepository).findById(Integer.parseInt(id));
         verify(rentalPropertyDtoMapper).mapToEntity(rentalPropertyRequestDto);
     }
 
@@ -167,9 +167,9 @@ class RentalPropertyResourceTest {
         RentalPropertyResponseDto rentalPropertyResponseDto = oneRentalPropertyResponse();
         RentalPropertyEntity rentalPropertyEntity = oneRentalPropertyEntity();
 
-        String id = "1a8ed763-928c-4155-bee9-fdbaaadc15f3";
+        String id = "1";
 
-        when(rentalPropertyRepository.findById(UUID.fromString(id))).thenReturn(Optional.of(rentalPropertyEntity));
+        when(rentalPropertyRepository.findById(Integer.parseInt(id))).thenReturn(Optional.of(rentalPropertyEntity));
         when(rentalPropertyDtoMapper.mapToDto(rentalPropertyEntity)).thenReturn(rentalPropertyResponseDto);
         when(rentalPropertyDtoMapper.mapToEntity(rentalPropertyRequestDto)).thenReturn(rentalPropertyEntity);
 
@@ -178,34 +178,34 @@ class RentalPropertyResourceTest {
                         .content(readResource(rentalPropertyRequest)))
                 .andExpect(status().isOk());
 
-        verify(rentalPropertyRepository).findById(UUID.fromString(id));
+        verify(rentalPropertyRepository).findById(Integer.parseInt(id));
         verify(rentalPropertyDtoMapper).mapToEntity(rentalPropertyRequestDto);
     }
 
     @Test
     void givenNoExistentRentalPropertyId_shouldThrowNotFoundRentalPropertyException_whenPatchRentalProperty() throws Exception {
-        String id = "1a8ed763-928c-4155-bee9-fdbaaadc15f3";
+        String id = "1";
 
-        when(rentalPropertyRepository.findById(UUID.fromString(id))).thenReturn(Optional.empty());
+        when(rentalPropertyRepository.findById(Integer.parseInt(id))).thenReturn(Optional.empty());
 
         mockMvc.perform(patch("/rent-properties-api/rental-properties/{id}", id)
                         .contentType(APPLICATION_JSON_VALUE)
                         .content(readResource(rentalPropertyRequest)))
                 .andExpect(status().isNotFound());
 
-        verify(rentalPropertyRepository).findById(UUID.fromString(id));
+        verify(rentalPropertyRepository).findById(Integer.parseInt(id));
         verifyNoMoreInteractions(rentalPropertyRepository);
     }
     @Test
     void givenNoExistentRentalPropertyId_shouldThrowNotFoundRentalPropertyException_whenDeleteRentalProperty() throws Exception {
-        String id = "1a8ed763-928c-4155-bee9-fdbaaadc15f3";
+        String id = "1";
 
-        when(rentalPropertyRepository.findById(UUID.fromString(id))).thenReturn(Optional.empty());
+        when(rentalPropertyRepository.findById(Integer.parseInt(id))).thenReturn(Optional.empty());
 
         mockMvc.perform(delete("/rent-properties-api/rental-properties/{id}", id))
                 .andExpect(status().isNotFound());
 
-        verify(rentalPropertyRepository).findById(UUID.fromString(id));
+        verify(rentalPropertyRepository).findById(Integer.parseInt(id));
         verifyNoInteractions(rentalPropertyDtoMapper);
         verifyNoMoreInteractions(rentalPropertyRepository);
     }

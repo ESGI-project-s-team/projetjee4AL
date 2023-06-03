@@ -38,7 +38,7 @@ public class RentalPropertyResource {
 
     @GetMapping("/rental-properties/{id}")
     public RentalPropertyResponseDto getRentalPropertyById(@PathVariable String id) {
-        Optional<RentalPropertyResponseDto> optRentalPropertyDtoResponse = rentalPropertyRepository.findById(UUID.fromString(id))
+        Optional<RentalPropertyResponseDto> optRentalPropertyDtoResponse = rentalPropertyRepository.findById(Integer.parseInt(id))
                 .map(rentalPropertyDtoMapper::mapToDto);
 
         if (optRentalPropertyDtoResponse.isEmpty()) {
@@ -59,19 +59,19 @@ public class RentalPropertyResource {
 
     @PutMapping("/rental-properties/{id}")
     public void updateRentalProperty(@PathVariable String id, @Valid @RequestBody RentalPropertyRequestDto rentalPropertyRequestDto) {
-        Optional<RentalPropertyEntity> optRentalPropertyEntity = rentalPropertyRepository.findById(UUID.fromString(id));
+        Optional<RentalPropertyEntity> optRentalPropertyEntity = rentalPropertyRepository.findById(Integer.parseInt(id));
         RentalPropertyEntity rentalPropertyEntity = rentalPropertyDtoMapper.mapToEntity(rentalPropertyRequestDto);
         if (optRentalPropertyEntity.isPresent()) {
-            rentalPropertyEntity.setId(UUID.fromString(id));
+            rentalPropertyEntity.setId(Integer.parseInt(id));
         }
         rentalPropertyRepository.save(rentalPropertyEntity);
     }
 
     @DeleteMapping("/rental-properties/{id}")
     public void deleteRentalProperty(@PathVariable String id) {
-        Optional<RentalPropertyEntity> optRentalPropertyEntity = rentalPropertyRepository.findById(UUID.fromString(id));
+        Optional<RentalPropertyEntity> optRentalPropertyEntity = rentalPropertyRepository.findById(Integer.parseInt(id));
         if (optRentalPropertyEntity.isPresent()) {
-            rentalPropertyRepository.deleteById(UUID.fromString(id));
+            rentalPropertyRepository.deleteById(Integer.parseInt(id));
         } else {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND
@@ -81,10 +81,10 @@ public class RentalPropertyResource {
 //patch only what is not null
     @PatchMapping("/rental-properties/{id}")
     public void patchRentalProperty(@PathVariable String id, @Valid @RequestBody RentalPropertyRequestDto rentalPropertyRequestDto) {
-        Optional<RentalPropertyEntity> optRentalPropertyEntity = rentalPropertyRepository.findById(UUID.fromString(id));
+        Optional<RentalPropertyEntity> optRentalPropertyEntity = rentalPropertyRepository.findById(Integer.parseInt(id));
         RentalPropertyEntity rentalPropertyEntity = rentalPropertyDtoMapper.mapToEntity(rentalPropertyRequestDto);
         if (optRentalPropertyEntity.isPresent()) {
-            rentalPropertyEntity.setId(UUID.fromString(id));
+            rentalPropertyEntity.setId(Integer.parseInt(id));
             rentalPropertyRepository.save(rentalPropertyEntity);
         }else{
             throw new ResponseStatusException(

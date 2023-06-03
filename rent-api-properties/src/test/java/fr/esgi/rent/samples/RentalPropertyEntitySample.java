@@ -17,11 +17,11 @@ public class RentalPropertyEntitySample {
 
     public static RentalPropertyEntity oneRentalPropertyEntity() {
         return new RentalPropertyEntity(
-                UUID.fromString("1a8ed763-928c-4155-bee9-fdbaaadc15f3"),
+               1,
                 "Appartement spacieux avec vue sur l'ESGI",
                 "Paris",
                 "77 Rue des roses",
-                new PropertyTypeEntity(UUID.fromString("e58ed763-928c-4155-bee9-fdbaaadc15f3"), "Appartement"),
+                new PropertyTypeEntity(1, "Appartement"),
                 750.90,
                 1200.90,
                 37.48,
@@ -29,7 +29,7 @@ public class RentalPropertyEntitySample {
                 1,
                 3,
                 1990,
-                new EnergyClassificationEntity(UUID.fromString("cb3ed763-928c-4155-bee9-fdbaaadc15f3"), "B"),
+                new EnergyClassificationEntity(1, "B"),
                 false,
                 false,
                 true,
