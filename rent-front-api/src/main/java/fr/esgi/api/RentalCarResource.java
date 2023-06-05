@@ -1,69 +1,62 @@
 package fr.esgi.api;
 
+
 import com.google.gson.Gson;
-import fr.esgi.beans.PropertyType;
-import fr.esgi.beans.RentalProperty;
+import fr.esgi.dto.request.RentalCarDtoRequest;
+import fr.esgi.dto.request.RentalCarRequestPatchDto;
 import fr.esgi.dto.request.RentalPropertyDtoRequest;
 import fr.esgi.dto.request.RentalPropertyRequestPatchDto;
+import fr.esgi.dto.response.RentalCarDtoResponse;
 import fr.esgi.dto.response.RentalPropertyDtoResponse;
-import fr.esgi.mapper.RentalPropertyDtoMapper;
 import jakarta.inject.Inject;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonValue;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
-import java.lang.reflect.Array;
-import java.net.*;
+import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
-@Path("/rental-properties")
-public class RentalPropertyResource {
-
-    private final RentalPropertyDtoMapper rentalPropertyDtoMapper;
+@Path("/rental-cars")
+public class RentalCarResource {
 
     @Inject
-    public RentalPropertyResource(RentalPropertyDtoMapper rentalPropertyDtoMapper) {
-        this.rentalPropertyDtoMapper = rentalPropertyDtoMapper;
+    public RentalCarResource(){
+
     }
 
     @GET
-    public Response getRentalProperties() {
-
+    public Response getRentalCars(){
         try{
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("http://localhost:8081/rent-properties-api/rental-properties"))
+                    .uri(new URI("http://localhost:8081/rent-cars-api/rental-cars"))
                     .GET()
                     .build();
             System.out.println("Sending request to " + request.uri());
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             String responseBody = response.body();
             Gson gson = new Gson();
-            List<RentalPropertyDtoResponse> rentalPropertyList = Arrays.stream(gson.fromJson(responseBody, RentalPropertyDtoResponse[].class)).toList();
-            return Response.ok(rentalPropertyList).build();
+            List<RentalCarDtoResponse> rentalCarDtoResponseList = Arrays.stream(gson.fromJson(responseBody, RentalCarDtoResponse[].class)).toList();
+            return Response.ok(rentalCarDtoResponseList).build();
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
-
     }
 
     @GET
     @Path("/{id}")
-    public Response getRentalPropertyById(@PathParam("id") @Positive  int id) {
+    public Response getRentalCarById(@PathParam("id") @Positive int id) {
 
         try{
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("http://localhost:8081/rent-properties-api/rental-properties/" + id))
+                    .uri(new URI("http://localhost:8081/rent-cars-api/rental-cars/" + id))
                     .GET()
                     .build();
             System.out.println("Sending request to " + request.uri());
@@ -74,9 +67,9 @@ public class RentalPropertyResource {
 
             String responseBody = response.body();
             Gson gson = new Gson();
-            RentalPropertyDtoResponse rentalProperty = gson.fromJson(responseBody, RentalPropertyDtoResponse.class);
+            RentalCarDtoResponse rentalCar = gson.fromJson(responseBody, RentalCarDtoResponse.class);
 
-            return Response.ok(rentalProperty).build();
+            return Response.ok(rentalCar).build();
 
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
@@ -87,14 +80,14 @@ public class RentalPropertyResource {
     }
 
     @POST
-    public Response createRentalProperty(@Valid RentalPropertyDtoRequest rentalPropertyDtoRequest) {
+    public Response createRentalCar(@Valid RentalCarDtoRequest rentalCarDtoRequest) {
 
         try{
-            String jsonInString = new Gson().toJson(rentalPropertyDtoRequest);
+            String jsonInString = new Gson().toJson(rentalCarDtoRequest);
 
-                    HttpClient client = HttpClient.newHttpClient();
+            HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("http://localhost:8081/rent-properties-api/rental-properties"))
+                    .uri(new URI("http://localhost:8081/rent-cars-api/rental-cars"))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(jsonInString))
                     .build();
@@ -115,13 +108,13 @@ public class RentalPropertyResource {
 
     @PUT
     @Path("/{id}")
-    public Response updateRentalProperty(@PathParam("id") @Positive int id, @Valid RentalPropertyDtoRequest rentalPropertyDtoRequest) {
+    public Response updateRentalCar(@PathParam("id") @Positive int id, @Valid RentalCarDtoRequest rentalCarDtoRequest) {
         try{
-            String jsonInString = new Gson().toJson(rentalPropertyDtoRequest);
+            String jsonInString = new Gson().toJson(rentalCarDtoRequest);
 
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("http://localhost:8081/rent-properties-api/rental-properties/" + id))
+                    .uri(new URI("http://localhost:8081/rent-cars-api/rental-cars/" + id))
                     .header("Content-Type", "application/json")
                     .PUT(HttpRequest.BodyPublishers.ofString(jsonInString))
                     .build();
@@ -143,14 +136,14 @@ public class RentalPropertyResource {
 
     @PATCH
     @Path("/{id}")
-    public Response patchRentalProperty(@PathParam("id") @Positive int id, @Valid RentalPropertyRequestPatchDto rentalPropertyRequestPatchDto) {
+    public Response patchRentalCar(@PathParam("id") @Positive int id, @Valid RentalCarRequestPatchDto rentalCarRequestPatchDto) {
 
         try{
-            String jsonInString = new Gson().toJson(rentalPropertyRequestPatchDto);
+            String jsonInString = new Gson().toJson(rentalCarRequestPatchDto);
 
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("http://localhost:8081/rent-properties-api/rental-properties/" + id))
+                    .uri(new URI("http://localhost:8081/rent-cars-api/rental-cars/" + id))
                     .header("Content-Type", "application/json")
                     .method("PATCH", HttpRequest.BodyPublishers.ofString(jsonInString))
                     .build();
@@ -176,12 +169,12 @@ public class RentalPropertyResource {
 
     @DELETE
     @Path("/{id}")
-    public Response deleteRentalProperty(@PathParam("id") @Positive int id) {
+    public Response deleteRentalCar(@PathParam("id") @Positive int id) {
 
         try{
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("http://localhost:8081/rent-properties-api/rental-properties/" + id))
+                    .uri(new URI("http://localhost:8081/rent-cars-api/rental-cars/" + id))
                     .header("Content-Type", "application/json")
                     .DELETE()
                     .build();
