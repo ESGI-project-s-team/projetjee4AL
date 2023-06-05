@@ -1,5 +1,6 @@
 package fr.esgi.api;
 
+import com.google.gson.Gson;
 import fr.esgi.beans.PropertyType;
 import fr.esgi.beans.RentalProperty;
 import fr.esgi.dto.request.RentalPropertyDtoRequest;
@@ -7,12 +8,17 @@ import fr.esgi.dto.request.RentalPropertyRequestPatchDto;
 import fr.esgi.dto.response.RentalPropertyDtoResponse;
 import fr.esgi.mapper.RentalPropertyDtoMapper;
 import jakarta.inject.Inject;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonValue;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
+import java.net.*;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,33 +35,44 @@ public class RentalPropertyResource {
     @GET
     public Response getRentalProperties() {
 
-        List<RentalProperty> rentals = List.of(
-                new RentalProperty(1, "Appartement spacieux avec vue sur l'ESGI", "Paris", "77 Rue des roses", new PropertyType(1, "FLAT"), 750.9, 1200.9, 37.48, null, null, null, null, null, null, null, null, null),
-                new RentalProperty(2, "Maison à louer dans banlieue calme et proche du RER", "Champs-sur-Marne", "12 rue de la Pyramide", new PropertyType(2, "HOUSE"), 1050.9, 1400.9, 62.5, null, null, null, null, null, null, null, null, null)
-        );
-
-        return Response.ok(rentalPropertyDtoMapper.mapToDtoList(rentals)).build();
+        try{
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:8081/rent-properties-api/rental-properties"))
+                    .GET()
+                    .build();
+            System.out.println("Sending request to " + request.uri());
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            return Response.ok(response.body()).build();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
 
     }
 
     @GET
     @Path("/{id}")
     public Response getRentalPropertyById(@PathParam("id") @Positive  int id) {
-        List<RentalProperty> rentals = List.of(
-                new RentalProperty(1, "Appartement spacieux avec vue sur l'ESGI", "Paris", "77 Rue des roses", new PropertyType(1, "FLAT"), 750.9, 1200.9, 37.48, null, null, null, null, null, null, null, null, null),
-                new RentalProperty(2, "Maison à louer dans banlieue calme et proche du RER", "Champs-sur-Marne", "12 rue de la Pyramide", new PropertyType(2, "HOUSE"), 1050.9, 1400.9, 62.5, null, null, null, null, null, null, null, null, null)
-        );
 
-        Optional<RentalPropertyDtoResponse> optRentalPropertyDtoResponse = rentals.stream()
-                .filter(rentalProperty -> rentalProperty.id() == id)
-                .map(rentalPropertyDtoMapper::mapToDto)
-                .findAny();
+        try{
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:8081/rent-properties-api/rental-properties/" + id))
+                    .GET()
+                    .build();
+            System.out.println("Sending request to " + request.uri());
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 404){
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
 
-        if (optRentalPropertyDtoResponse.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.ok(response.body()).build();
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
-
-        return Response.ok(optRentalPropertyDtoResponse.get()).build();
 
 
     }
@@ -63,22 +80,55 @@ public class RentalPropertyResource {
     @POST
     public Response createRentalProperty(@Valid RentalPropertyDtoRequest rentalPropertyDtoRequest) {
 
-        RentalProperty rentalProperty = rentalPropertyDtoMapper.mapToBean(rentalPropertyDtoRequest);
+        try{
+            String jsonInString = new Gson().toJson(rentalPropertyDtoRequest);
 
-        return Response.status(Response.Status.CREATED).build();
+                    HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:8081/rent-properties-api/rental-properties"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(jsonInString))
+                    .build();
+            System.out.println("Sending request to " + request.uri());
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() != 201){
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
+
+            return Response.ok().status(Response.Status.CREATED).build();
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
 
     }
 
     @PUT
     @Path("/{id}")
     public Response updateRentalProperty(@PathParam("id") @Positive int id, @Valid RentalPropertyDtoRequest rentalPropertyDtoRequest) {
+        try{
+            String jsonInString = new Gson().toJson(rentalPropertyDtoRequest);
 
-        RentalProperty rentalProperty = rentalPropertyDtoMapper.mapToBean(rentalPropertyDtoRequest);
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:8081/rent-properties-api/rental-properties/" + id))
+                    .header("Content-Type", "application/json")
+                    .PUT(HttpRequest.BodyPublishers.ofString(jsonInString))
+                    .build();
+            System.out.println("Sending request to " + request.uri());
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
+            if (response.statusCode() != 200){
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
 
-        if (id != 2)
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.ok().build();
 
-        return Response.ok().build();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
 
     }
 
@@ -86,10 +136,32 @@ public class RentalPropertyResource {
     @Path("/{id}")
     public Response patchRentalProperty(@PathParam("id") @Positive int id, @Valid RentalPropertyRequestPatchDto rentalPropertyRequestPatchDto) {
 
-        if (id != 2)
-            return Response.status(Response.Status.NOT_FOUND).build();
+        try{
+            String jsonInString = new Gson().toJson(rentalPropertyRequestPatchDto);
 
-        return Response.ok().build();
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:8081/rent-properties-api/rental-properties/" + id))
+                    .header("Content-Type", "application/json")
+                    .method("PATCH", HttpRequest.BodyPublishers.ofString(jsonInString))
+                    .build();
+            System.out.println("Sending request to " + request.uri());
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
+            if (response.statusCode() == 404){
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+
+            if (response.statusCode() == 400){
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
+
+            return Response.ok().build();
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
 
     }
 
@@ -97,7 +169,23 @@ public class RentalPropertyResource {
     @Path("/{id}")
     public Response deleteRentalProperty(@PathParam("id") @Positive int id) {
 
-        return Response.status(Response.Status.NO_CONTENT).build();
+        try{
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:8081/rent-properties-api/rental-properties/" + id))
+                    .header("Content-Type", "application/json")
+                    .DELETE()
+                    .build();
+            System.out.println("Sending request to " + request.uri());
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
+
+            return Response.status(Response.Status.NO_CONTENT).build();
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
 
     }
 
