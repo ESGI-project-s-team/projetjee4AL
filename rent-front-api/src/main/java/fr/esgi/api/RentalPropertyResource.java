@@ -15,10 +15,12 @@ import jakarta.validation.constraints.Positive;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
+import java.lang.reflect.Array;
 import java.net.*;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +45,10 @@ public class RentalPropertyResource {
                     .build();
             System.out.println("Sending request to " + request.uri());
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            return Response.ok(response.body()).build();
+            String responseBody = response.body();
+            Gson gson = new Gson();
+            List<RentalPropertyDtoResponse> rentalPropertyList = Arrays.stream(gson.fromJson(responseBody, RentalPropertyDtoResponse[].class)).toList();
+            return Response.ok(rentalPropertyList).build();
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -67,7 +72,11 @@ public class RentalPropertyResource {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
 
-            return Response.ok(response.body()).build();
+            String responseBody = response.body();
+            Gson gson = new Gson();
+            RentalPropertyDtoResponse rentalProperty = gson.fromJson(responseBody, RentalPropertyDtoResponse.class);
+
+            return Response.ok(rentalProperty).build();
 
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
