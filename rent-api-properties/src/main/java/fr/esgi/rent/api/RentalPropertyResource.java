@@ -1,5 +1,6 @@
 package fr.esgi.rent.api;
 
+import fr.esgi.rent.dto.request.RentalPropertyRequestPatchDto;
 import fr.esgi.rent.entity.RentalPropertyEntity;
 import fr.esgi.rent.dto.request.RentalPropertyRequestDto;
 import fr.esgi.rent.dto.response.RentalPropertyResponseDto;
@@ -72,25 +73,21 @@ public class RentalPropertyResource {
         Optional<RentalPropertyEntity> optRentalPropertyEntity = rentalPropertyRepository.findById(Integer.parseInt(id));
         if (optRentalPropertyEntity.isPresent()) {
             rentalPropertyRepository.deleteById(Integer.parseInt(id));
+        }
+    }
+
+    //patch only what is not null
+    @PatchMapping("/rental-properties/{id}")
+    public void patchRentalProperty(@PathVariable String id, @Valid @RequestBody RentalPropertyRequestPatchDto rentalPropertyRequestPatchDto) {
+        Optional<RentalPropertyEntity> optRentalPropertyEntity = rentalPropertyRepository.findById(Integer.parseInt(id));
+        if (optRentalPropertyEntity.isPresent()) {
+            RentalPropertyEntity rentalPropertyEntity = optRentalPropertyEntity.get();
+            rentalPropertyEntity.setRentAmount(rentalPropertyRequestPatchDto.rentAmount());
+            rentalPropertyRepository.save(rentalPropertyEntity);
         } else {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND
             );
         }
-    }
-//patch only what is not null
-    @PatchMapping("/rental-properties/{id}")
-    public void patchRentalProperty(@PathVariable String id, @Valid @RequestBody RentalPropertyRequestDto rentalPropertyRequestDto) {
-        Optional<RentalPropertyEntity> optRentalPropertyEntity = rentalPropertyRepository.findById(Integer.parseInt(id));
-        RentalPropertyEntity rentalPropertyEntity = rentalPropertyDtoMapper.mapToEntity(rentalPropertyRequestDto);
-        if (optRentalPropertyEntity.isPresent()) {
-            rentalPropertyEntity.setId(Integer.parseInt(id));
-            rentalPropertyRepository.save(rentalPropertyEntity);
-        }else{
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND
-            );
-        }
-
     }
 }
