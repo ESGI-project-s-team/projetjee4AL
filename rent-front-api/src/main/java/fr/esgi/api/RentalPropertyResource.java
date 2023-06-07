@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import fr.esgi.dto.request.RentalPropertyDtoRequest;
 import fr.esgi.dto.request.RentalPropertyRequestPatchDto;
 import fr.esgi.dto.response.RentalPropertyDtoResponse;
+import fr.esgi.exception.BadRequestRentalPropertyException;
+import fr.esgi.exception.NotFoundRentalPropertyException;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -57,7 +59,7 @@ public class RentalPropertyResource {
                     .build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() == 404){
-                return Response.status(Response.Status.NOT_FOUND).build();
+                throw new NotFoundRentalPropertyException(Integer.toString(id));
             }
 
             String responseBody = response.body();
@@ -66,7 +68,11 @@ public class RentalPropertyResource {
 
             return Response.ok(rentalProperty).build();
 
-        } catch (Exception e) {
+        } catch (NotFoundRentalPropertyException e) {
+            System.out.println("Error: " + e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).build();
+
+        } catch (Exception e){
             System.out.println("Error: " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
@@ -88,11 +94,14 @@ public class RentalPropertyResource {
                     .build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 201){
-                return Response.status(Response.Status.BAD_REQUEST).build();
+                throw new BadRequestRentalPropertyException();
             }
 
             return Response.ok().status(Response.Status.CREATED).build();
 
+        } catch(BadRequestRentalPropertyException e) {
+            System.out.println("Error: " + e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).build();
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -114,11 +123,14 @@ public class RentalPropertyResource {
                     .build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 200){
-                return Response.status(Response.Status.BAD_REQUEST).build();
+                throw new BadRequestRentalPropertyException();
             }
 
             return Response.ok().build();
 
+        } catch (BadRequestRentalPropertyException e) {
+            System.out.println("Error: " + e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).build();
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -141,14 +153,22 @@ public class RentalPropertyResource {
                     .build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() == 404){
-                return Response.status(Response.Status.NOT_FOUND).build();
+                throw new NotFoundRentalPropertyException(Integer.toString(id));
             }
 
             if (response.statusCode() == 400){
-                return Response.status(Response.Status.BAD_REQUEST).build();
+                throw new BadRequestRentalPropertyException();
             }
 
             return Response.ok().build();
+
+        } catch (NotFoundRentalPropertyException e) {
+            System.out.println("Error: " + e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).build();
+
+        } catch (BadRequestRentalPropertyException e) {
+            System.out.println("Error: " + e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).build();
 
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
