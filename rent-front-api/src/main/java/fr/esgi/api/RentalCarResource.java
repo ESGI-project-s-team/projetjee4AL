@@ -4,10 +4,7 @@ package fr.esgi.api;
 import com.google.gson.Gson;
 import fr.esgi.dto.request.RentalCarDtoRequest;
 import fr.esgi.dto.request.RentalCarRequestPatchDto;
-import fr.esgi.dto.request.RentalPropertyDtoRequest;
-import fr.esgi.dto.request.RentalPropertyRequestPatchDto;
 import fr.esgi.dto.response.RentalCarDtoResponse;
-import fr.esgi.dto.response.RentalPropertyDtoResponse;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -37,7 +34,6 @@ public class RentalCarResource {
                     .uri(new URI("http://localhost:8081/rent-cars-api/rental-cars"))
                     .GET()
                     .build();
-            System.out.println("Sending request to " + request.uri());
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             String responseBody = response.body();
             Gson gson = new Gson();
@@ -59,7 +55,6 @@ public class RentalCarResource {
                     .uri(new URI("http://localhost:8081/rent-cars-api/rental-cars/" + id))
                     .GET()
                     .build();
-            System.out.println("Sending request to " + request.uri());
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() == 404){
                 return Response.status(Response.Status.NOT_FOUND).build();
@@ -91,7 +86,6 @@ public class RentalCarResource {
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(jsonInString))
                     .build();
-            System.out.println("Sending request to " + request.uri());
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 201){
                 return Response.status(Response.Status.BAD_REQUEST).build();
@@ -118,9 +112,7 @@ public class RentalCarResource {
                     .header("Content-Type", "application/json")
                     .PUT(HttpRequest.BodyPublishers.ofString(jsonInString))
                     .build();
-            System.out.println("Sending request to " + request.uri());
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.body());
             if (response.statusCode() != 200){
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
@@ -147,9 +139,7 @@ public class RentalCarResource {
                     .header("Content-Type", "application/json")
                     .method("PATCH", HttpRequest.BodyPublishers.ofString(jsonInString))
                     .build();
-            System.out.println("Sending request to " + request.uri());
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.body());
             if (response.statusCode() == 404){
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
@@ -178,9 +168,7 @@ public class RentalCarResource {
                     .header("Content-Type", "application/json")
                     .DELETE()
                     .build();
-            System.out.println("Sending request to " + request.uri());
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.body());
+            client.send(request, HttpResponse.BodyHandlers.ofString());
 
             return Response.status(Response.Status.NO_CONTENT).build();
 
