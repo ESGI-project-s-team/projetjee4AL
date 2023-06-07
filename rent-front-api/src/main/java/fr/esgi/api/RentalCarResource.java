@@ -4,10 +4,9 @@ package fr.esgi.api;
 import com.google.gson.Gson;
 import fr.esgi.dto.request.RentalCarDtoRequest;
 import fr.esgi.dto.request.RentalCarRequestPatchDto;
-import fr.esgi.dto.request.RentalPropertyDtoRequest;
-import fr.esgi.dto.request.RentalPropertyRequestPatchDto;
 import fr.esgi.dto.response.RentalCarDtoResponse;
-import fr.esgi.dto.response.RentalPropertyDtoResponse;
+import fr.esgi.exception.BadRequestRentalCarException;
+import fr.esgi.exception.NotFoundRentalCarException;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -37,7 +36,6 @@ public class RentalCarResource {
                     .uri(new URI("http://localhost:8081/rent-cars-api/rental-cars"))
                     .GET()
                     .build();
-            System.out.println("Sending request to " + request.uri());
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             String responseBody = response.body();
             Gson gson = new Gson();
@@ -59,10 +57,9 @@ public class RentalCarResource {
                     .uri(new URI("http://localhost:8081/rent-cars-api/rental-cars/" + id))
                     .GET()
                     .build();
-            System.out.println("Sending request to " + request.uri());
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() == 404){
-                return Response.status(Response.Status.NOT_FOUND).build();
+                throw new NotFoundRentalCarException(Integer.toString(id));
             }
 
             String responseBody = response.body();
@@ -71,6 +68,9 @@ public class RentalCarResource {
 
             return Response.ok(rentalCar).build();
 
+        } catch (NotFoundRentalCarException e) {
+            System.out.println("Error: " + e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).build();
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -91,14 +91,16 @@ public class RentalCarResource {
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(jsonInString))
                     .build();
-            System.out.println("Sending request to " + request.uri());
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 201){
-                return Response.status(Response.Status.BAD_REQUEST).build();
+                throw new BadRequestRentalCarException();
             }
 
             return Response.ok().status(Response.Status.CREATED).build();
 
+        } catch (BadRequestRentalCarException e) {
+            System.out.println("Error: " + e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).build();
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -118,15 +120,16 @@ public class RentalCarResource {
                     .header("Content-Type", "application/json")
                     .PUT(HttpRequest.BodyPublishers.ofString(jsonInString))
                     .build();
-            System.out.println("Sending request to " + request.uri());
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.body());
             if (response.statusCode() != 200){
-                return Response.status(Response.Status.BAD_REQUEST).build();
+                throw new BadRequestRentalCarException();
             }
 
             return Response.ok().build();
 
+        } catch (BadRequestRentalCarException e) {
+            System.out.println("Error: " + e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).build();
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -147,19 +150,23 @@ public class RentalCarResource {
                     .header("Content-Type", "application/json")
                     .method("PATCH", HttpRequest.BodyPublishers.ofString(jsonInString))
                     .build();
-            System.out.println("Sending request to " + request.uri());
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.body());
             if (response.statusCode() == 404){
-                return Response.status(Response.Status.NOT_FOUND).build();
+                throw new NotFoundRentalCarException(Integer.toString(id));
             }
 
             if (response.statusCode() == 400){
-                return Response.status(Response.Status.BAD_REQUEST).build();
+                throw new BadRequestRentalCarException();
             }
 
             return Response.ok().build();
 
+        } catch (NotFoundRentalCarException e) {
+            System.out.println("Error: " + e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).build();
+        } catch (BadRequestRentalCarException e) {
+            System.out.println("Error: " + e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).build();
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -178,9 +185,7 @@ public class RentalCarResource {
                     .header("Content-Type", "application/json")
                     .DELETE()
                     .build();
-            System.out.println("Sending request to " + request.uri());
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.body());
+            client.send(request, HttpResponse.BodyHandlers.ofString());
 
             return Response.status(Response.Status.NO_CONTENT).build();
 
