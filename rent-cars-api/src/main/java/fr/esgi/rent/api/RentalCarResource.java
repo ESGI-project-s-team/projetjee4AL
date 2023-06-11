@@ -1,5 +1,6 @@
 package fr.esgi.rent.api;
 
+import fr.esgi.rent.domain.RentalCarService;
 import fr.esgi.rent.dto.request.RentalCarRequestDto;
 import fr.esgi.rent.dto.request.RentalCarRequestPatchDto;
 import fr.esgi.rent.dto.response.RentalCarResponseDto;
@@ -21,73 +22,44 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 @RequestMapping("/rent-cars-api")
 public class RentalCarResource {
 
-    private final RentalCarRepository rentalCarRepository;
-    private final RentalCarDtoMapper rentalCarDtoMapper;
+    private final RentalCarService rentalCarService;
 
     public RentalCarResource(RentalCarRepository rentalCarRepository,
                              RentalCarDtoMapper rentalCarDtoMapper) {
-        this.rentalCarRepository = rentalCarRepository;
-        this.rentalCarDtoMapper = rentalCarDtoMapper;
+        this.rentalCarService = new RentalCarService(rentalCarRepository, rentalCarDtoMapper);
     }
 
     @GetMapping("/rental-cars")
-    public List<RentalCarResponseDto> getRentalCars() {
-        List<RentalCarEntity> rentalcars = rentalCarRepository.findAll();
-
-        return rentalCarDtoMapper.mapToDtoList(rentalcars);
-    }
+    public List<RentalCarResponseDto> getRentalCars() { return rentalCarService.getRentalCars(); }
 
     @GetMapping("/rental-cars/{id}")
     public RentalCarResponseDto getRentalCarById(@PathVariable String id) {
-        Optional<RentalCarResponseDto> optRentalCarDtoResponse = rentalCarRepository.findById(Integer.parseInt(id))
-                .map(rentalCarDtoMapper::mapToDto);
-
-        if (optRentalCarDtoResponse.isEmpty()) {
+        try {
+            return rentalCarService.getRentalCarById(id);
+        } catch (Exception e) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND
             );
         }
-        return optRentalCarDtoResponse.get();
     }
 
     @PostMapping("/rental-cars")
     @ResponseStatus(CREATED)
     public void createRentalCar(@Valid @RequestBody RentalCarRequestDto rentalCarRequestDto) {
-        RentalCarEntity rentalCarEntity = rentalCarDtoMapper.mapToEntity(rentalCarRequestDto);
-        rentalCarRepository.save(rentalCarEntity);
+        rentalCarService.createRentalCar(rentalCarRequestDto);
     }
 
     @PutMapping("/rental-cars/{id}")
     public void updateRentalCar(@PathVariable String id, @Valid @RequestBody RentalCarRequestDto rentalCarRequestDto) {
-        Optional<RentalCarEntity> optRentalCarEntity = rentalCarRepository.findById(Integer.parseInt(id));
-        RentalCarEntity rentalCarEntity = rentalCarDtoMapper.mapToEntity(rentalCarRequestDto);
-        if (optRentalCarEntity.isPresent()) {
-            rentalCarEntity.setId(Integer.parseInt(id));
-        }
-        rentalCarRepository.save(rentalCarEntity);
+        rentalCarService.updateRentalCar(id, rentalCarRequestDto);
     }
 
     @PatchMapping("/rental-cars/{id}")
     public void patchRentalCar(@PathVariable String id, @Valid @RequestBody RentalCarRequestPatchDto rentalCarRequestPatchDto) {
-        Optional<RentalCarEntity> optRentalCarEntity = rentalCarRepository.findById(Integer.parseInt(id));
-        if (optRentalCarEntity.isPresent()) {
-            RentalCarEntity rentalCarEntity = optRentalCarEntity.get();
-            rentalCarEntity.setRentAmount(rentalCarRequestPatchDto.rentAmount());
-            rentalCarRepository.save(rentalCarEntity);
-        } else {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND
-            );
-        }
+        rentalCarService.patchRentalCar(id, rentalCarRequestPatchDto);
     }
 
     @DeleteMapping("/rental-cars/{id}")
     @ResponseStatus(NO_CONTENT)
-    public void deleteRentalCar(@PathVariable String id) {
-        Optional<RentalCarEntity> optRentalCarEntity = rentalCarRepository.findById(Integer.parseInt(id));
-        if (optRentalCarEntity.isPresent()) {
-            rentalCarRepository.deleteById(Integer.parseInt(id));
-
-        }
-    }
+    public void deleteRentalCar(@PathVariable String id) { rentalCarService.deleteRentalCar(id); }
 }
