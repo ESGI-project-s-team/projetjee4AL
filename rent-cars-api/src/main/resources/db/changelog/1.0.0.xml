@@ -1,0 +1,30 @@
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet id="create-rental-car-1.0.0" author="david">
+        <createTable tableName="rental_car">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="brand" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="model" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rent_amount" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="security_deposit_amount" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="number_of_seats" type="INT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="number_of_doors" type="INT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="has_air_conditioning" type="BIT(1)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

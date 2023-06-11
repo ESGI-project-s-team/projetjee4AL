@@ -11,6 +11,7 @@
     <modules>
         <module>rent-front-api</module>
         <module>rent-api-properties</module>
+        <module>rent-cars-api</module>
     </modules>
 
     <properties>
