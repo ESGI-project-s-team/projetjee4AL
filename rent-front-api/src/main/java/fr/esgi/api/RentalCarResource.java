@@ -23,7 +23,6 @@ import java.util.List;
 @Path("/rental-cars")
 public class RentalCarResource {
 
-    @Inject
     public RentalCarResource(){
 
     }
