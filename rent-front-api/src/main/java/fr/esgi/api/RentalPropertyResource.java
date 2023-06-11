@@ -12,6 +12,7 @@ import jakarta.validation.constraints.Positive;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
+import java.io.IOException;
 import java.net.*;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -26,7 +27,7 @@ public class RentalPropertyResource {
     public RentalPropertyResource() {
     }
 
-    @GET
+    /*@GET
     public Response getRentalProperties() {
 
         try{
@@ -45,9 +46,48 @@ public class RentalPropertyResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
+    }*/
+
+    @GET
+    public List<RentalPropertyDtoResponse> getRentalProperties() throws URISyntaxException, IOException, InterruptedException {
+
+
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:8081/rent-properties-api/rental-properties"))
+                    .GET()
+                    .build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            String responseBody = response.body();
+            Gson gson = new Gson();
+            return Arrays.stream(gson.fromJson(responseBody, RentalPropertyDtoResponse[].class)).toList();
+
+
     }
 
     @GET
+    @Path("/{id}")
+    public RentalPropertyDtoResponse getRentalPropertyById(@PathParam("id") @Positive  int id) throws URISyntaxException, IOException, InterruptedException {
+
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:8081/rent-properties-api/rental-properties/" + id))
+                    .GET()
+                    .build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 404){
+                throw new WebApplicationException(new NotFoundRentalPropertyException(Integer.toString(id)), Response.Status.NOT_FOUND);
+            }
+
+            String responseBody = response.body();
+            Gson gson = new Gson();
+
+            return gson.fromJson(responseBody, RentalPropertyDtoResponse.class);
+
+
+    }
+
+    /*@GET
     @Path("/{id}")
     public Response getRentalPropertyById(@PathParam("id") @Positive  int id) {
 
@@ -78,7 +118,7 @@ public class RentalPropertyResource {
         }
 
 
-    }
+    }*/
 
     @POST
     public Response createRentalProperty(@Valid RentalPropertyDtoRequest rentalPropertyDtoRequest) {
