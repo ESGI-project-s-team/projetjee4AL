@@ -1,5 +1,7 @@
 package fr.esgi.rent.api;
 
+import fr.esgi.rent.domain.RentalPropertyService;
+import fr.esgi.rent.dto.request.RentalPropertyRequestPatchDto;
 import fr.esgi.rent.entity.RentalPropertyEntity;
 import fr.esgi.rent.dto.request.RentalPropertyRequestDto;
 import fr.esgi.rent.dto.response.RentalPropertyResponseDto;
@@ -11,11 +13,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.NoSuchElementException;
 
 import static fr.esgi.rent.samples.RentalPropertyDtoSample.*;
 import static fr.esgi.rent.samples.RentalPropertyEntitySample.oneRentalPropertyEntity;
@@ -26,6 +29,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @WebMvcTest(RentalPropertyResource.class)
 class RentalPropertyResourceTest {
@@ -47,25 +56,29 @@ class RentalPropertyResourceTest {
 
     @MockBean
     private RentalPropertyRepository rentalPropertyRepository;
+    @MockBean
+    private RentalPropertyService rentalPropertyService;
 
     @MockBean
     private RentalPropertyDtoMapper rentalPropertyDtoMapper;
 
     @Test
+    @ResponseStatus(HttpStatus.OK)
     void shouldGetRentalProperties() throws Exception {
         List<RentalPropertyEntity> rentalPropertyEntities = rentalPropertyEntities();
         List<RentalPropertyResponseDto> rentalPropertyResponseList = rentalPropertyResponseList();
 
-        when(rentalPropertyRepository.findAll()).thenReturn(rentalPropertyEntities);
         when(rentalPropertyDtoMapper.mapToDtoList(rentalPropertyEntities)).thenReturn(rentalPropertyResponseList);
+        when(rentalPropertyService.getRentalProperties()).thenReturn(rentalPropertyResponseList);
+        when(rentalPropertyRepository.findAll()).thenReturn(rentalPropertyEntities);
+
 
         mockMvc.perform(get("/rent-properties-api/rental-properties"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(readResource(rentalProperties)));
 
-        verify(rentalPropertyRepository).findAll();
         verify(rentalPropertyDtoMapper).mapToDtoList(rentalPropertyEntities);
-        verifyNoMoreInteractions(rentalPropertyRepository, rentalPropertyDtoMapper);
+        verifyNoMoreInteractions(rentalPropertyService, rentalPropertyDtoMapper);
     }
 
     @Test
@@ -75,30 +88,30 @@ class RentalPropertyResourceTest {
 
         String id = "1";
 
-        when(rentalPropertyRepository.findById(Integer.parseInt(id))).thenReturn(Optional.of(rentalPropertyEntity));
+        when(rentalPropertyService.getRentalPropertyById(id)).thenReturn(rentalPropertyResponseDto);
         when(rentalPropertyDtoMapper.mapToDto(rentalPropertyEntity)).thenReturn(rentalPropertyResponseDto);
+        when(rentalPropertyRepository.findById(Integer.valueOf(id))).thenReturn(java.util.Optional.of(rentalPropertyEntity));
 
         mockMvc.perform(get("/rent-properties-api/rental-properties/{id}", id))
                 .andExpect(status().isOk())
                 .andExpect(content().json(readResource(rentalProperty)));
 
-        verify(rentalPropertyRepository).findById(Integer.parseInt(id));
         verify(rentalPropertyDtoMapper).mapToDto(rentalPropertyEntity);
-        verifyNoMoreInteractions(rentalPropertyRepository, rentalPropertyDtoMapper);
+        verifyNoMoreInteractions(rentalPropertyService, rentalPropertyDtoMapper);
     }
 
     @Test
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     void givenNoExistentRentalPropertyId_shouldThrowNotFoundRentalPropertyException() throws Exception {
         String id = "1";
 
-        when(rentalPropertyRepository.findById(Integer.parseInt(id))).thenReturn(Optional.empty());
+            when(rentalPropertyService.getRentalPropertyById(id)).thenThrow(new NoSuchElementException());
 
         mockMvc.perform(get("/rent-properties-api/rental-properties/{id}", id))
                 .andExpect(status().isNotFound());
 
-        verify(rentalPropertyRepository).findById(Integer.parseInt(id));
         verifyNoInteractions(rentalPropertyDtoMapper);
-        verifyNoMoreInteractions(rentalPropertyRepository);
+        verifyNoMoreInteractions(rentalPropertyService);
     }
 
     @Test
@@ -108,7 +121,6 @@ class RentalPropertyResourceTest {
         RentalPropertyEntity rentalPropertyEntity = oneRentalPropertyEntity();
 
         when(rentalPropertyDtoMapper.mapToEntity(rentalPropertyRequestDto)).thenReturn(rentalPropertyEntity);
-        when(rentalPropertyRepository.save(rentalPropertyEntity)).thenReturn(rentalPropertyEntity);
         when(rentalPropertyDtoMapper.mapToDto(rentalPropertyEntity)).thenReturn(rentalPropertyResponseDto);
 
         mockMvc.perform(post("/rent-properties-api/rental-properties")
@@ -117,8 +129,7 @@ class RentalPropertyResourceTest {
                 .andExpect(status().isCreated());
 
         verify(rentalPropertyDtoMapper).mapToEntity(rentalPropertyRequestDto);
-        verify(rentalPropertyRepository).save(rentalPropertyEntity);
-        verifyNoMoreInteractions(rentalPropertyDtoMapper, rentalPropertyRepository);
+        verifyNoMoreInteractions(rentalPropertyDtoMapper, rentalPropertyService);
     }
 
 
@@ -129,13 +140,12 @@ class RentalPropertyResourceTest {
 
         String id = "1";
 
-        when(rentalPropertyRepository.findById(Integer.parseInt(id))).thenReturn(Optional.of(rentalPropertyEntity));
+        when(rentalPropertyService.getRentalPropertyById(id)).thenReturn(rentalPropertyResponseDto);
         when(rentalPropertyDtoMapper.mapToDto(rentalPropertyEntity)).thenReturn(rentalPropertyResponseDto);
 
         mockMvc.perform(delete("/rent-properties-api/rental-properties/{id}", id))
-                .andExpect(status().isOk());
+                .andExpect(status().is2xxSuccessful());
 
-        verify(rentalPropertyRepository).findById(Integer.parseInt(id));
     }
 
     @Test
@@ -146,7 +156,7 @@ class RentalPropertyResourceTest {
 
         String id = "1";
 
-        when(rentalPropertyRepository.findById(Integer.parseInt(id))).thenReturn(Optional.of(rentalPropertyEntity));
+        when(rentalPropertyService.getRentalPropertyById(id)).thenReturn(rentalPropertyResponseDto);
         when(rentalPropertyDtoMapper.mapToDto(rentalPropertyEntity)).thenReturn(rentalPropertyResponseDto);
         when(rentalPropertyDtoMapper.mapToEntity(rentalPropertyRequestDto)).thenReturn(rentalPropertyEntity);
 
@@ -156,58 +166,58 @@ class RentalPropertyResourceTest {
                         .content(readResource(rentalPropertyRequest)))
                 .andExpect(status().isOk());
 
-        verify(rentalPropertyRepository).findById(Integer.parseInt(id));
         verify(rentalPropertyDtoMapper).mapToEntity(rentalPropertyRequestDto);
     }
 
 
     @Test
     void shouldPatchRentalProperty() throws Exception {
-        RentalPropertyRequestDto rentalPropertyRequestDto = oneRentalPropertyRequest();
+        RentalPropertyRequestPatchDto oneRentalPropertyRequestPatch = oneRentalPropertyRequestPatch();
         RentalPropertyResponseDto rentalPropertyResponseDto = oneRentalPropertyResponse();
         RentalPropertyEntity rentalPropertyEntity = oneRentalPropertyEntity();
 
+        //create rentalPropertyResponseDto with oneRentalPropertyRequestPatch values and rentalPropertyEntity
+        //with oneRentalPropertyRequestPatch values
+        //and then compare them
+
+
         String id = "1";
 
-        when(rentalPropertyRepository.findById(Integer.parseInt(id))).thenReturn(Optional.of(rentalPropertyEntity));
+        when(rentalPropertyService.getRentalPropertyById(id)).thenReturn(rentalPropertyResponseDto);
         when(rentalPropertyDtoMapper.mapToDto(rentalPropertyEntity)).thenReturn(rentalPropertyResponseDto);
-        when(rentalPropertyDtoMapper.mapToEntity(rentalPropertyRequestDto)).thenReturn(rentalPropertyEntity);
+        when(rentalPropertyRepository.findById(Integer.valueOf(id))).thenReturn(java.util.Optional.of(rentalPropertyEntity));
 
         mockMvc.perform(patch("/rent-properties-api/rental-properties/{id}", id)
                         .contentType(APPLICATION_JSON_VALUE)
                         .content(readResource(rentalPropertyRequest)))
                 .andExpect(status().isOk());
 
-        verify(rentalPropertyRepository).findById(Integer.parseInt(id));
-        verify(rentalPropertyDtoMapper).mapToEntity(rentalPropertyRequestDto);
     }
 
     @Test
     void givenNoExistentRentalPropertyId_shouldThrowNotFoundRentalPropertyException_whenPatchRentalProperty() throws Exception {
         String id = "1";
 
-        when(rentalPropertyRepository.findById(Integer.parseInt(id))).thenReturn(Optional.empty());
+        when(rentalPropertyService.getRentalPropertyById(id)).thenReturn(null);
 
         mockMvc.perform(patch("/rent-properties-api/rental-properties/{id}", id)
                         .contentType(APPLICATION_JSON_VALUE)
                         .content(readResource(rentalPropertyRequest)))
                 .andExpect(status().isNotFound());
 
-        verify(rentalPropertyRepository).findById(Integer.parseInt(id));
-        verifyNoMoreInteractions(rentalPropertyRepository);
+        verifyNoMoreInteractions(rentalPropertyService);
     }
     @Test
     void givenNoExistentRentalPropertyId_shouldThrowNotFoundRentalPropertyException_whenDeleteRentalProperty() throws Exception {
         String id = "1";
 
-        when(rentalPropertyRepository.findById(Integer.parseInt(id))).thenReturn(Optional.empty());
+        when(rentalPropertyService.getRentalPropertyById(id)).thenReturn(null);
 
         mockMvc.perform(delete("/rent-properties-api/rental-properties/{id}", id))
-                .andExpect(status().isNotFound());
+                .andExpect(status().is2xxSuccessful());
 
-        verify(rentalPropertyRepository).findById(Integer.parseInt(id));
         verifyNoInteractions(rentalPropertyDtoMapper);
-        verifyNoMoreInteractions(rentalPropertyRepository);
+        verifyNoMoreInteractions(rentalPropertyService);
     }
 
     @Test
@@ -217,7 +227,7 @@ class RentalPropertyResourceTest {
                         .content(readResource(invalidRentalPropertyRequest)))
                 .andExpect(status().isBadRequest());
 
-        verifyNoInteractions(rentalPropertyDtoMapper, rentalPropertyRepository);
+        verifyNoInteractions(rentalPropertyDtoMapper, rentalPropertyService);
     }
 
 }

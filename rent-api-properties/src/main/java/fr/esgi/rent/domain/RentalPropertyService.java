@@ -6,7 +6,6 @@ import fr.esgi.rent.dto.response.RentalPropertyResponseDto;
 import fr.esgi.rent.entity.RentalPropertyEntity;
 import fr.esgi.rent.mapper.RentalPropertyDtoMapper;
 import fr.esgi.rent.repository.RentalPropertyRepository;
-import jakarta.ws.rs.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 

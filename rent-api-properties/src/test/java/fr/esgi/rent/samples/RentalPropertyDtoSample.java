@@ -1,6 +1,7 @@
 package fr.esgi.rent.samples;
 
 import fr.esgi.rent.dto.request.RentalPropertyRequestDto;
+import fr.esgi.rent.dto.request.RentalPropertyRequestPatchDto;
 import fr.esgi.rent.dto.response.RentalPropertyResponseDto;
 
 import java.util.List;
@@ -43,6 +44,12 @@ public class RentalPropertyDtoSample {
                 .hasIntercom(false)
                 .hasBalcony(true)
                 .hasParkingSpace(false)
+                .build();
+    }
+
+    public static RentalPropertyRequestPatchDto oneRentalPropertyRequestPatch() {
+        return RentalPropertyRequestPatchDto.builder()
+                .rentAmount(750.90)
                 .build();
     }
 
