@@ -1,6 +1,7 @@
 package fr.esgi.rent.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@Builder
 @Table(name = "rental_car")
 public class RentalCarEntity {
 

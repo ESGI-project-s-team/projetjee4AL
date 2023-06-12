@@ -1,7 +1,6 @@
 package fr.esgi.rent.api.error;
 
-
-import fr.esgi.rent.exception.NotFoundCarException;
+import fr.esgi.rent.exception.NotFoundRentalCarException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,8 +11,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ErrorHandler {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NotFoundCarException.class)
-    public ErrorDto handleNotFoundRentalPropertyException(NotFoundCarException notFoundRentalCarException) {
+    @ExceptionHandler(NotFoundRentalCarException.class)
+    public ErrorDto handleNotFoundRentalCarException(NotFoundRentalCarException notFoundRentalCarException) {
         return new ErrorDto(notFoundRentalCarException.getMessage());
     }
 
