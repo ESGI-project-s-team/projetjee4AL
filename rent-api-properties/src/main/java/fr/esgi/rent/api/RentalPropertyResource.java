@@ -2,7 +2,6 @@ package fr.esgi.rent.api;
 
 import fr.esgi.rent.domain.RentalPropertyService;
 import fr.esgi.rent.dto.request.RentalPropertyRequestPatchDto;
-import fr.esgi.rent.entity.RentalPropertyEntity;
 import fr.esgi.rent.dto.request.RentalPropertyRequestDto;
 import fr.esgi.rent.dto.response.RentalPropertyResponseDto;
 import fr.esgi.rent.mapper.RentalPropertyDtoMapper;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-
-
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
