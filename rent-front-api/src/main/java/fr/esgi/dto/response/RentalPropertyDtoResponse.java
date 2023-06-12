@@ -1,7 +1,5 @@
 package fr.esgi.dto.response;
 
-import fr.esgi.beans.PropertyType;
-
 public record RentalPropertyDtoResponse(
         String address,
         double area,
