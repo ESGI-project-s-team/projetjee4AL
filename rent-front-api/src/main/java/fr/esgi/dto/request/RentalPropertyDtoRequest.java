@@ -1,7 +1,5 @@
 package fr.esgi.dto.request;
 
-import fr.esgi.beans.EnergyClassification;
-import fr.esgi.beans.PropertyType;
 import jakarta.validation.constraints.NotNull;
 
 public record RentalPropertyDtoRequest(
