@@ -2,6 +2,7 @@ package fr.esgi.rent.mapper;
 
 import fr.esgi.rent.entity.RentalPropertyEntity;
 import fr.esgi.rent.dto.response.RentalPropertyResponseDto;
+import fr.esgi.rent.samples.RentalPropertyEntitySample;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import static fr.esgi.rent.samples.RentalPropertyEntitySample.oneRentalPropertyE
 import static fr.esgi.rent.samples.RentalPropertyEntitySample.rentalPropertyEntities;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RentalPropertyDtoMapperTest {
 
@@ -54,7 +56,23 @@ class RentalPropertyDtoMapperTest {
     void shouldMapToEntity() {
         RentalPropertyDtoMapper rentalPropertyDtoMapper = new RentalPropertyDtoMapper();
         RentalPropertyEntity rentalPropertyEntity = rentalPropertyDtoMapper.mapToEntity(oneRentalPropertyRequest());
-        assertThat(rentalPropertyEntity).isNotNull();
+        RentalPropertyEntity rentalPropertyEntityExpected = oneRentalPropertyEntity();
+        assertEquals(rentalPropertyEntityExpected.getDescription(), rentalPropertyEntity.getDescription());
+        assertEquals(rentalPropertyEntityExpected.getTown(), rentalPropertyEntity.getTown());
+        assertEquals(rentalPropertyEntityExpected.getAddress(), rentalPropertyEntity.getAddress());
+        assertEquals(rentalPropertyEntityExpected.getPropertyType().getDesignation(), rentalPropertyEntity.getPropertyType().getDesignation());
+        assertEquals(rentalPropertyEntityExpected.getRentAmount(), rentalPropertyEntity.getRentAmount());
+        assertEquals(rentalPropertyEntityExpected.getSecurityDepositAmount(), rentalPropertyEntity.getSecurityDepositAmount());
+        assertEquals(rentalPropertyEntityExpected.getArea(), rentalPropertyEntity.getArea());
+        assertEquals(rentalPropertyEntityExpected.getNumberOfBedrooms(), rentalPropertyEntity.getNumberOfBedrooms());
+        assertEquals(rentalPropertyEntityExpected.getFloorNumber(), rentalPropertyEntity.getFloorNumber());
+        assertEquals(rentalPropertyEntityExpected.getNumberOfFloors(), rentalPropertyEntity.getNumberOfFloors());
+        assertEquals(rentalPropertyEntityExpected.getConstructionYear(), rentalPropertyEntity.getConstructionYear());
+        assertEquals(rentalPropertyEntityExpected.getEnergyClassification().getDesignation(), rentalPropertyEntity.getEnergyClassification().getDesignation());
+        assertEquals(rentalPropertyEntityExpected.isHasElevator(), rentalPropertyEntity.isHasElevator());
+        assertEquals(rentalPropertyEntityExpected.isHasIntercom(), rentalPropertyEntity.isHasIntercom());
+        assertEquals(rentalPropertyEntityExpected.isHasBalcony(), rentalPropertyEntity.isHasBalcony());
+        assertEquals(rentalPropertyEntityExpected.isHasParkingSpace(), rentalPropertyEntity.isHasParkingSpace());
     }
 
 }
