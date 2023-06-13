@@ -176,11 +176,6 @@ class RentalPropertyResourceTest {
         RentalPropertyResponseDto rentalPropertyResponseDto = oneRentalPropertyResponse();
         RentalPropertyEntity rentalPropertyEntity = oneRentalPropertyEntity();
 
-        //create rentalPropertyResponseDto with oneRentalPropertyRequestPatch values and rentalPropertyEntity
-        //with oneRentalPropertyRequestPatch values
-        //and then compare them
-
-
         String id = "1";
 
         when(rentalPropertyService.getRentalPropertyById(id)).thenReturn(rentalPropertyResponseDto);
@@ -204,6 +199,20 @@ class RentalPropertyResourceTest {
                         .contentType(APPLICATION_JSON_VALUE)
                         .content(readResource(rentalPropertyRequest)))
                 .andExpect(status().isNotFound());
+
+        verifyNoMoreInteractions(rentalPropertyService);
+    }
+
+    @Test
+    void givenNoExistentRentalPropertyId_shouldThrowNotFoundRentalPropertyException_whenUpdatePutRentalProperty() throws Exception {
+        String id = "1";
+
+        when(rentalPropertyService.getRentalPropertyById(id)).thenReturn(null);
+
+        mockMvc.perform(put("/rent-properties-api/rental-properties/{id}", id)
+                        .contentType(APPLICATION_JSON_VALUE)
+                        .content(readResource(rentalPropertyRequest)))
+                .andExpect(status().isOk());
 
         verifyNoMoreInteractions(rentalPropertyService);
     }
