@@ -15,27 +15,26 @@ import java.util.List;
 @ApplicationScoped
 public class RentalCarMapper {
 
-    private final Gson gson;
 
     public RentalCarMapper(){
-        this.gson = new Gson();
+
     }
 
     public List<RentalCarDtoResponse> stringToDtoResponseList(String responseBody){
-        return Arrays.stream(gson.fromJson(responseBody, RentalCarDtoResponse[].class)).toList();
+        return Arrays.stream(new Gson().fromJson(responseBody, RentalCarDtoResponse[].class)).toList();
 
     }
 
     public RentalCarDtoResponse stringToDtoResponse(String responseBody){
-        return gson.fromJson(responseBody, RentalCarDtoResponse.class);
+        return new Gson().fromJson(responseBody, RentalCarDtoResponse.class);
     }
 
     public String dtoRequestToString(RentalCarDtoRequest rentalCarDtoRequest){
-        return gson.toJson(rentalCarDtoRequest);
+        return new Gson().toJson(rentalCarDtoRequest);
     }
 
     public String patchDtoRequestToString(RentalCarRequestPatchDto rentalCarRequestPatchDto){
-        return gson.toJson(rentalCarRequestPatchDto);
+        return new Gson().toJson(rentalCarRequestPatchDto);
     }
 
 }

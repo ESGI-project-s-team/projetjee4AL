@@ -34,7 +34,7 @@ public class RentalPropertyResource {
     @GET
     public List<RentalPropertyDtoResponse> getRentalProperties() throws URISyntaxException, IOException, InterruptedException {
             HttpResponse<String> response = this.requesterService.callGET("http://localhost:8081/rent-properties-api/rental-properties");
-            return rentalPropertyMapper.stringToDtoResponseList(response.body());
+        return rentalPropertyMapper.stringToDtoResponseList(response.body());
     }
 
     @GET
@@ -47,7 +47,7 @@ public class RentalPropertyResource {
             throw new NotFoundRentalPropertyException("Property " + id + " not found");
         }
 
-            return this.rentalPropertyMapper.stringToDtoResponse(response.body());
+        return this.rentalPropertyMapper.stringToDtoResponse(response.body());
 
     }
 

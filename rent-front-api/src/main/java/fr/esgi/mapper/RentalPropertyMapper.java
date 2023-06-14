@@ -6,6 +6,7 @@ import fr.esgi.dto.request.RentalPropertyDtoRequest;
 import fr.esgi.dto.request.RentalPropertyRequestPatchDto;
 import fr.esgi.dto.response.RentalPropertyDtoResponse;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,27 +14,23 @@ import java.util.List;
 @ApplicationScoped
 public class RentalPropertyMapper {
 
-    private final Gson gson;
-
     public RentalPropertyMapper(){
-        this.gson = new Gson();
     }
 
     public List<RentalPropertyDtoResponse> stringToDtoResponseList(String responseBody){
-        return Arrays.stream(gson.fromJson(responseBody, RentalPropertyDtoResponse[].class)).toList();
-
+        return Arrays.stream(new Gson().fromJson(responseBody, RentalPropertyDtoResponse[].class)).toList();
     }
 
     public RentalPropertyDtoResponse stringToDtoResponse(String responseBody){
-        return gson.fromJson(responseBody, RentalPropertyDtoResponse.class);
+        return new Gson().fromJson(responseBody, RentalPropertyDtoResponse.class);
     }
 
     public String dtoRequestToString(RentalPropertyDtoRequest rentalPropertyDtoRequest){
-        return gson.toJson(rentalPropertyDtoRequest);
+        return new Gson().toJson(rentalPropertyDtoRequest);
     }
 
     public String patchDtoRequestToString(RentalPropertyRequestPatchDto rentalPropertyRequestPatchDto){
-        return gson.toJson(rentalPropertyRequestPatchDto);
+        return new Gson().toJson(rentalPropertyRequestPatchDto);
     }
 
 }

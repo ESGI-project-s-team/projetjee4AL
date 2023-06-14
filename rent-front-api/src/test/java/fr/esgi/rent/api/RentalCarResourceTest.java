@@ -1,74 +1,69 @@
 package fr.esgi.rent.api;
 
-import com.google.gson.Gson;
+import fr.esgi.api.RentalCarResource;
 import fr.esgi.api.RentalPropertyResource;
+import fr.esgi.dto.response.RentalCarDtoResponse;
 import fr.esgi.dto.response.RentalPropertyDtoResponse;
+import fr.esgi.exception.BadRequestRentalCarException;
 import fr.esgi.exception.BadRequestRentalPropertyException;
+import fr.esgi.exception.NotFoundRentalCarException;
 import fr.esgi.exception.NotFoundRentalPropertyException;
+import fr.esgi.mapper.RentalCarMapper;
 import fr.esgi.mapper.RentalPropertyMapper;
 import fr.esgi.service.RequesterService;
-import jakarta.faces.context.ExceptionHandler;
-import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.ext.RuntimeDelegate;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Arrays;
 import java.util.List;
 
-import static fr.esgi.rent.sample.HttpResponseSample.rentalPropertyGetAllResponse;
-import static fr.esgi.rent.sample.HttpResponseSample.rentalPropertyGetOneResponse;
+import static fr.esgi.rent.sample.HttpResponseSample.*;
+import static fr.esgi.rent.sample.RentalCarDtoRequestSample.oneRentalCarDtoRequest;
+import static fr.esgi.rent.sample.RentalCarDtoRequestSample.oneRentalCarDtoRequestPatch;
+import static fr.esgi.rent.sample.RentalCarDtoResponseSample.oneRentalCarDto;
+import static fr.esgi.rent.sample.RentalCarDtoResponseSample.rentalCarDtoResponsesList;
 import static fr.esgi.rent.sample.RentalPropertyDtoRequestSample.oneRentalPropertyDtoRequest;
 import static fr.esgi.rent.sample.RentalPropertyDtoRequestSample.oneRentalPropertyDtoRequestPatch;
 import static fr.esgi.rent.sample.RentalPropertyDtoResponseSample.oneRentalPropertyDto;
 import static fr.esgi.rent.sample.RentalPropertyDtoResponseSample.rentalPropertyDtoResponsesList;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-public class RentalPropertyResourceTest {
+public class RentalCarResourceTest {
 
 
     @InjectMocks
-    private RentalPropertyResource rentalPropertyResource;
+    private RentalCarResource rentalCarResource;
 
     @Mock
     private RequesterService requesterService;
 
     @Mock
-    private RentalPropertyMapper rentalPropertyMapper;
+    private RentalCarMapper rentalCarMapper;
 
     @Mock
     private HttpResponse<String> httpResponse;
 
     @Test
-    public void shouldGetRentalProperties() throws URISyntaxException, IOException, InterruptedException {
-        when(rentalPropertyMapper.stringToDtoResponseList(rentalPropertyGetAllResponse())).thenCallRealMethod();
-        when(httpResponse.body()).thenReturn(rentalPropertyGetAllResponse());
+    public void shouldGetRentalCars() throws URISyntaxException, IOException, InterruptedException {
+        when(rentalCarMapper.stringToDtoResponseList(rentalCarGetAllResponse())).thenCallRealMethod();
+        when(httpResponse.body()).thenReturn(rentalCarGetAllResponse());
         when(requesterService.callGET(anyString())).thenReturn(httpResponse);
 
-        List<RentalPropertyDtoResponse> rentalPropertiesResponse = rentalPropertyResource.getRentalProperties();
+        List<RentalCarDtoResponse> rentalCarsResponse = rentalCarResource.getRentalCars();
 
-        assertNotNull(rentalPropertiesResponse);
-        assertEquals(rentalPropertyDtoResponsesList(), rentalPropertiesResponse);
+        assertNotNull(rentalCarsResponse);
+        assertEquals(rentalCarDtoResponsesList(), rentalCarsResponse);
 
-        verifyNoMoreInteractions(rentalPropertyMapper);
+        verifyNoMoreInteractions(rentalCarMapper);
         verifyNoMoreInteractions(requesterService);
         verifyNoMoreInteractions(httpResponse);
 
@@ -76,17 +71,17 @@ public class RentalPropertyResourceTest {
 
     @Test
     public void shouldGetRentalPropertyById() throws URISyntaxException, IOException, InterruptedException {
-        when(rentalPropertyMapper.stringToDtoResponse(rentalPropertyGetOneResponse())).thenCallRealMethod();
-        when(httpResponse.body()).thenReturn(rentalPropertyGetOneResponse());
+        when(rentalCarMapper.stringToDtoResponse(rentalCarGetOneResponse())).thenCallRealMethod();
+        when(httpResponse.body()).thenReturn(rentalCarGetOneResponse());
         when(httpResponse.statusCode()).thenReturn(200);
         when(requesterService.callGET(anyString())).thenReturn(httpResponse);
 
-        RentalPropertyDtoResponse rentalPropertiesResponse = rentalPropertyResource.getRentalPropertyById(1);
+        RentalCarDtoResponse rentalCarResponse = rentalCarResource.getRentalCarById(1);
 
-        assertNotNull(rentalPropertiesResponse);
-        assertEquals(oneRentalPropertyDto(), rentalPropertiesResponse);
+        assertNotNull(rentalCarResponse);
+        assertEquals(oneRentalCarDto(), rentalCarResponse);
 
-        verifyNoMoreInteractions(rentalPropertyMapper);
+        verifyNoMoreInteractions(rentalCarMapper);
         verifyNoMoreInteractions(requesterService);
         verifyNoMoreInteractions(httpResponse);
 
@@ -98,7 +93,7 @@ public class RentalPropertyResourceTest {
         when(requesterService.callGET(anyString())).thenReturn(httpResponse);
 
 
-        assertThrows(NotFoundRentalPropertyException.class, () -> {rentalPropertyResource.getRentalPropertyById(1);});
+        assertThrows(NotFoundRentalCarException.class, () -> {rentalCarResource.getRentalCarById(1);});
         verifyNoMoreInteractions(requesterService);
         verifyNoMoreInteractions(httpResponse);
     }
@@ -107,14 +102,14 @@ public class RentalPropertyResourceTest {
     public void shouldPostRentalProperty() throws URISyntaxException, IOException, InterruptedException {
         when(httpResponse.statusCode()).thenReturn(201);
         when(requesterService.callPOST(anyString(), any())).thenReturn(httpResponse);
-        when(rentalPropertyMapper.dtoRequestToString(oneRentalPropertyDtoRequest())).thenCallRealMethod();
+        when(rentalCarMapper.dtoRequestToString(oneRentalCarDtoRequest())).thenCallRealMethod();
 
-        Response response = rentalPropertyResource.createRentalProperty(oneRentalPropertyDtoRequest());
+        Response response = rentalCarResource.createRentalCar(oneRentalCarDtoRequest());
 
 
         assertEquals(201, response.getStatus());
 
-        verifyNoMoreInteractions(rentalPropertyMapper);
+        verifyNoMoreInteractions(rentalCarMapper);
         verifyNoMoreInteractions(requesterService);
         verifyNoMoreInteractions(httpResponse);
 
@@ -125,12 +120,12 @@ public class RentalPropertyResourceTest {
     public void shouldNotPostRentalPropertyAndThrowBadRequestException() throws URISyntaxException, IOException, InterruptedException {
         when(httpResponse.statusCode()).thenReturn(400); // if status != 201 (Created)
         when(requesterService.callPOST(anyString(), any())).thenReturn(httpResponse);
-        when(rentalPropertyMapper.dtoRequestToString(oneRentalPropertyDtoRequest())).thenCallRealMethod();
+        when(rentalCarMapper.dtoRequestToString(oneRentalCarDtoRequest())).thenCallRealMethod();
 
 
-        assertThrows(BadRequestRentalPropertyException.class, () -> {rentalPropertyResource.createRentalProperty(oneRentalPropertyDtoRequest());});
+        assertThrows(BadRequestRentalCarException.class, () -> {rentalCarResource.createRentalCar(oneRentalCarDtoRequest());});
 
-        verifyNoMoreInteractions(rentalPropertyMapper);
+        verifyNoMoreInteractions(rentalCarMapper);
         verifyNoMoreInteractions(requesterService);
         verifyNoMoreInteractions(httpResponse);
     }
@@ -139,14 +134,14 @@ public class RentalPropertyResourceTest {
     public void shouldPutRentalProperty() throws URISyntaxException, IOException, InterruptedException {
         when(httpResponse.statusCode()).thenReturn(200);
         when(requesterService.callPUT(anyString(), any())).thenReturn(httpResponse);
-        when(rentalPropertyMapper.dtoRequestToString(oneRentalPropertyDtoRequest())).thenCallRealMethod();
+        when(rentalCarMapper.dtoRequestToString(oneRentalCarDtoRequest())).thenCallRealMethod();
 
-        Response response = rentalPropertyResource.updateRentalProperty(1, oneRentalPropertyDtoRequest());
+        Response response = rentalCarResource.updateRentalCar(1, oneRentalCarDtoRequest());
 
 
         assertEquals(200, response.getStatus());
 
-        verifyNoMoreInteractions(rentalPropertyMapper);
+        verifyNoMoreInteractions(rentalCarMapper);
         verifyNoMoreInteractions(requesterService);
         verifyNoMoreInteractions(httpResponse);
     }
@@ -155,12 +150,12 @@ public class RentalPropertyResourceTest {
     public void shouldNotPutRentalPropertyAndThrowBadRequestException() throws URISyntaxException, IOException, InterruptedException {
         when(httpResponse.statusCode()).thenReturn(400); // if status != 200 (Ok)
         when(requesterService.callPUT(anyString(), any())).thenReturn(httpResponse);
-        when(rentalPropertyMapper.dtoRequestToString(oneRentalPropertyDtoRequest())).thenCallRealMethod();
+        when(rentalCarMapper.dtoRequestToString(oneRentalCarDtoRequest())).thenCallRealMethod();
 
 
-        assertThrows(BadRequestRentalPropertyException.class, () -> {rentalPropertyResource.updateRentalProperty(1, oneRentalPropertyDtoRequest());});
+        assertThrows(BadRequestRentalCarException.class, () -> {rentalCarResource.updateRentalCar(1, oneRentalCarDtoRequest());});
 
-        verifyNoMoreInteractions(rentalPropertyMapper);
+        verifyNoMoreInteractions(rentalCarMapper);
         verifyNoMoreInteractions(requesterService);
         verifyNoMoreInteractions(httpResponse);
     }
@@ -169,14 +164,14 @@ public class RentalPropertyResourceTest {
     public void shouldPatchRentalProperty() throws URISyntaxException, IOException, InterruptedException {
         when(httpResponse.statusCode()).thenReturn(200);
         when(requesterService.callPATCH(anyString(), any())).thenReturn(httpResponse);
-        when(rentalPropertyMapper.patchDtoRequestToString(oneRentalPropertyDtoRequestPatch())).thenCallRealMethod();
+        when(rentalCarMapper.patchDtoRequestToString(oneRentalCarDtoRequestPatch())).thenCallRealMethod();
 
-        Response response = rentalPropertyResource.patchRentalProperty(1, oneRentalPropertyDtoRequestPatch());
+        Response response = rentalCarResource.patchRentalCar(1, oneRentalCarDtoRequestPatch());
 
 
         assertEquals(200, response.getStatus());
 
-        verifyNoMoreInteractions(rentalPropertyMapper);
+        verifyNoMoreInteractions(rentalCarMapper);
         verifyNoMoreInteractions(requesterService);
         verifyNoMoreInteractions(httpResponse);
 
@@ -186,13 +181,13 @@ public class RentalPropertyResourceTest {
     public void shouldNotPatchRentalPropertyAndThrowBadRequestException() throws URISyntaxException, IOException, InterruptedException {
         when(httpResponse.statusCode()).thenReturn(400); // if status == 400 (Bad Request)
         when(requesterService.callPATCH(anyString(), any())).thenReturn(httpResponse);
-        when(rentalPropertyMapper.patchDtoRequestToString(oneRentalPropertyDtoRequestPatch())).thenCallRealMethod();
+        when(rentalCarMapper.patchDtoRequestToString(oneRentalCarDtoRequestPatch())).thenCallRealMethod();
 
 
 
-        assertThrows(BadRequestRentalPropertyException.class, () -> {rentalPropertyResource.patchRentalProperty(1, oneRentalPropertyDtoRequestPatch());});
+        assertThrows(BadRequestRentalCarException.class, () -> {rentalCarResource.patchRentalCar(1, oneRentalCarDtoRequestPatch());});
 
-        verifyNoMoreInteractions(rentalPropertyMapper);
+        verifyNoMoreInteractions(rentalCarMapper);
         verifyNoMoreInteractions(requesterService);
         verifyNoMoreInteractions(httpResponse);
 
@@ -202,13 +197,13 @@ public class RentalPropertyResourceTest {
     public void shouldNotPatchRentalPropertyAndThrowNotFoundException() throws URISyntaxException, IOException, InterruptedException {
         when(httpResponse.statusCode()).thenReturn(404); // if status == 404 (Not Found)
         when(requesterService.callPATCH(anyString(), any())).thenReturn(httpResponse);
-        when(rentalPropertyMapper.patchDtoRequestToString(oneRentalPropertyDtoRequestPatch())).thenCallRealMethod();
+        when(rentalCarMapper.patchDtoRequestToString(oneRentalCarDtoRequestPatch())).thenCallRealMethod();
 
 
 
-        assertThrows(NotFoundRentalPropertyException.class, () -> {rentalPropertyResource.patchRentalProperty(1, oneRentalPropertyDtoRequestPatch());});
+        assertThrows(NotFoundRentalCarException.class, () -> {rentalCarResource.patchRentalCar(1, oneRentalCarDtoRequestPatch());});
 
-        verifyNoMoreInteractions(rentalPropertyMapper);
+        verifyNoMoreInteractions(rentalCarMapper);
         verifyNoMoreInteractions(requesterService);
         verifyNoMoreInteractions(httpResponse);
 
@@ -219,9 +214,9 @@ public class RentalPropertyResourceTest {
     public void shouldDeleteRentalProperty() throws URISyntaxException, IOException, InterruptedException {
         when(requesterService.callDELETE(anyString())).thenReturn(httpResponse); // then return ?
 
-        rentalPropertyResource.deleteRentalProperty(1);
+        rentalCarResource.deleteRentalCar(1);
 
-        verifyNoMoreInteractions(rentalPropertyMapper);
+        verifyNoMoreInteractions(rentalCarMapper);
 
     }
 

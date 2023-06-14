@@ -1,6 +1,8 @@
 package fr.esgi.service;
 
-import jakarta.faces.bean.ApplicationScoped;
+
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.io.IOException;
 import java.net.URI;

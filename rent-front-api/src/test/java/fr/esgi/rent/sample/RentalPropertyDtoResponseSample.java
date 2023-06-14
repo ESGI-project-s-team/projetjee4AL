@@ -8,16 +8,6 @@ public class RentalPropertyDtoResponseSample {
     public static List<RentalPropertyDtoResponse> rentalPropertyDtoResponsesList() {
         RentalPropertyDtoResponse rentalProperty = oneRentalPropertyDto();
 
-        RentalPropertyDtoResponse largeFlat = new RentalPropertyDtoResponse(
-                "77 Rue des roses",
-                37.48,
-                "Appartement spacieux avec vue sur l'ESGI",
-                "FLAT",
-                750.9,
-                1200.9,
-                "Paris"
-        );
-
         RentalPropertyDtoResponse house = new RentalPropertyDtoResponse(
                 "12 rue de la Pyramide",
                 62.5,
@@ -27,7 +17,7 @@ public class RentalPropertyDtoResponseSample {
                 1400.90,
                 "Champs-sur-Marne");
 
-        return List.of(rentalProperty, largeFlat, house);
+        return List.of(rentalProperty, house);
     }
 
     public static RentalPropertyDtoResponse oneRentalPropertyDto() {
