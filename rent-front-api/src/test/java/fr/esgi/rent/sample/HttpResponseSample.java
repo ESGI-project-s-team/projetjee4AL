@@ -23,4 +23,5 @@ public class HttpResponseSample {
     public static String rentalCarGetOneResponse(){
         return "{\"brand\": \"BMW\",\"model\" : \"Serie 1\",\"rentAmount\" : 790.9,\"securityDepositAmount\" : 1550.9,\"numberOfSeats\" : 5,\"numberOfDoors\": 4,\"hasAirConditioning\" : \"true\"}";
     }
+
 }
