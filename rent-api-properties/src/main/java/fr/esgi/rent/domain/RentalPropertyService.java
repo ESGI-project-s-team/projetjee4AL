@@ -6,12 +6,13 @@ import fr.esgi.rent.dto.response.RentalPropertyResponseDto;
 import fr.esgi.rent.entity.RentalPropertyEntity;
 import fr.esgi.rent.mapper.RentalPropertyDtoMapper;
 import fr.esgi.rent.repository.RentalPropertyRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
-
+@Slf4j
 public class RentalPropertyService {
     private final RentalPropertyRepository rentalPropertyRepository;
     private final RentalPropertyDtoMapper rentalPropertyDtoMapper;
