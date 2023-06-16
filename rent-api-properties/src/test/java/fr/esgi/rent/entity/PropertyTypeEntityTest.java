@@ -6,7 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import java.lang.reflect.Field;
 import static org.junit.jupiter.api.Assertions.*;
 
-@WebMvcTest(PropertyTypeEntity.class)
+
 public class PropertyTypeEntityTest {
     @Test
     void shouldHavePrivateFieldsWithPublicConstructor2()  {

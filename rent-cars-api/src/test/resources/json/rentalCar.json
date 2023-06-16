@@ -1,0 +1,9 @@
+{
+  "brand": "Audi",
+  "model": "A3",
+  "rentAmount": 3000.0,
+  "securityDepositAmount": 1000.0,
+  "numberOfSeats": 5,
+  "numberOfDoors": 5,
+  "hasAirConditioning": true
+}

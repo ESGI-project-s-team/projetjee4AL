@@ -10,7 +10,6 @@ class ApplicationTest {
     }
     @Test
     void contextLoads() {
-
         Application.main(new String[] {});
     }
 

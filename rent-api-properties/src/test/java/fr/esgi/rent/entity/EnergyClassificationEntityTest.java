@@ -5,7 +5,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-@WebMvcTest(EnergyClassificationEntity.class)
+
 public class EnergyClassificationEntityTest {
     @Test
     void shouldHavePrivateFieldsWithPublicConstructor2()  {

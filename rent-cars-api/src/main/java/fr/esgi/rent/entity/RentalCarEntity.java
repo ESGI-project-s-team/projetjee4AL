@@ -41,6 +41,7 @@ public class RentalCarEntity {
                            int numberOfSeats,
                            int numberOfDoors,
                            boolean hasAirConditioning) {
+        this.id = id;
         this.brand = brand;
         this.model = model;
         this.rentAmount = rentAmount;
