@@ -38,7 +38,7 @@ public class RentalCarDtoSample {
                 .build();
     }
 
-    private static RentalCarRequestPatchDto oneRentalCarRequestPatch() {
+    public static RentalCarRequestPatchDto oneRentalCarRequestPatch() {
         return RentalCarRequestPatchDto.builder()
                 .rentAmount(750.90)
                 .build();

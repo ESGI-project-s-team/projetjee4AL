@@ -12,6 +12,7 @@ import static fr.esgi.rent.samples.RentalCarEntitySample.oneRentalCarEntity;
 import static fr.esgi.rent.samples.RentalCarEntitySample.rentalCarEntities;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RentalCarDtoMapperTest {
 
@@ -63,6 +64,12 @@ class RentalCarDtoMapperTest {
         RentalCarEntity expectedRentalCarEntity = oneRentalCarEntity();
         RentalCarEntity rentalCarEntity = rentalCarDtoMapper.mapToEntity(oneRentalCarRequest());
 
-        assertThat(rentalCarEntity).isEqualTo(expectedRentalCarEntity);
+        assertEquals(expectedRentalCarEntity.getBrand(), rentalCarEntity.getBrand());
+        assertEquals(expectedRentalCarEntity.getModel(), rentalCarEntity.getModel());
+        assertEquals(expectedRentalCarEntity.getRentAmount(), rentalCarEntity.getRentAmount());
+        assertEquals(expectedRentalCarEntity.getSecurityDepositAmount(), rentalCarEntity.getSecurityDepositAmount());
+        assertEquals(expectedRentalCarEntity.getNumberOfSeats(), rentalCarEntity.getNumberOfSeats());
+        assertEquals(expectedRentalCarEntity.getNumberOfDoors(), rentalCarEntity.getNumberOfDoors());
+        assertEquals(expectedRentalCarEntity.isHasAirConditioning(), rentalCarEntity.isHasAirConditioning());
     }
 }
