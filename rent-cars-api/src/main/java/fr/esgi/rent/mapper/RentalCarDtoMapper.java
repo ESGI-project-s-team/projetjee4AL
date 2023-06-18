@@ -1,6 +1,5 @@
 package fr.esgi.rent.mapper;
 
-
 import org.springframework.stereotype.Component;
 import fr.esgi.rent.dto.request.RentalCarRequestDto;
 import fr.esgi.rent.dto.response.RentalCarResponseDto;

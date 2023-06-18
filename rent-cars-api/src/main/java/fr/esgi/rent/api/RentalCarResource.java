@@ -4,7 +4,6 @@ import fr.esgi.rent.domain.RentalCarService;
 import fr.esgi.rent.dto.request.RentalCarRequestDto;
 import fr.esgi.rent.dto.request.RentalCarRequestPatchDto;
 import fr.esgi.rent.dto.response.RentalCarResponseDto;
-import fr.esgi.rent.entity.RentalCarEntity;
 import fr.esgi.rent.mapper.RentalCarDtoMapper;
 import fr.esgi.rent.repository.RentalCarRepository;
 import jakarta.validation.Valid;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
