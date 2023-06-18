@@ -5,6 +5,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @WebMvcTest(RentalPropertyEntity.class)
+
 public class RentalPropertyEntityTest {
     @Test
     public void testRentalPropertyEntity() {
