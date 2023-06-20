@@ -42,7 +42,7 @@ public class RentalCarResource {
     @Path("/{id}")
     public RentalCarDtoResponse getRentalCarById(@PathParam("id") @Positive int id) throws URISyntaxException, IOException, InterruptedException {
 
-        HttpResponse<String> response = this.requesterService.callGET("http://localhost:8083/rent-cars-api/rental-cars" + id);
+        HttpResponse<String> response = this.requesterService.callGET("http://localhost:8083/rent-cars-api/rental-cars/" + id);
         if (response.statusCode() == 404){
             throw new NotFoundRentalCarException("Car " + id + " not found");
         }
@@ -69,7 +69,7 @@ public class RentalCarResource {
 
         String json = this.rentalCarMapper.dtoRequestToString(rentalCarDtoRequest);
 
-        HttpResponse<String> response = this.requesterService.callPUT("http://localhost:8083/rent-cars-api/rental-cars" + id, json);
+        HttpResponse<String> response = this.requesterService.callPUT("http://localhost:8083/rent-cars-api/rental-cars/" + id, json);
         if (response.statusCode() != 200){
             throw new BadRequestRentalCarException("Request Body is incomplete or invalid");
         }
@@ -84,7 +84,7 @@ public class RentalCarResource {
 
         String json = this.rentalCarMapper.patchDtoRequestToString(rentalCarRequestPatchDto);
 
-        HttpResponse<String> response = this.requesterService.callPATCH("http://localhost:8083/rent-cars-api/rental-cars" + id, json);
+        HttpResponse<String> response = this.requesterService.callPATCH("http://localhost:8083/rent-cars-api/rental-cars/" + id, json);
 
         if (response.statusCode() == 404){
             throw new NotFoundRentalCarException("Car " + id + " not found");
@@ -102,7 +102,7 @@ public class RentalCarResource {
     @Path("/{id}")
     public void deleteRentalCar(@PathParam("id") @Positive int id) throws URISyntaxException, IOException, InterruptedException {
 
-        this.requesterService.callDELETE("http://localhost:8083/rent-cars-api/rental-cars" + id);
+        this.requesterService.callDELETE("http://localhost:8083/rent-cars-api/rental-cars/" + id);
 
     }
 
