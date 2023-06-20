@@ -4,7 +4,6 @@ import fr.esgi.dto.request.RentalPropertyDtoRequest;
 import fr.esgi.dto.request.RentalPropertyRequestPatchDto;
 import fr.esgi.dto.response.RentalPropertyDtoResponse;
 import fr.esgi.exception.BadRequestRentalPropertyException;
-import fr.esgi.exception.NotFoundRentalCarException;
 import fr.esgi.exception.NotFoundRentalPropertyException;
 import fr.esgi.mapper.RentalPropertyMapper;
 import fr.esgi.service.RequesterService;

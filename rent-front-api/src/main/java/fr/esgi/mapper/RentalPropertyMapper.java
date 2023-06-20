@@ -1,12 +1,10 @@
 package fr.esgi.mapper;
 
 import com.google.gson.Gson;
-import fr.esgi.dto.request.RentalCarRequestPatchDto;
 import fr.esgi.dto.request.RentalPropertyDtoRequest;
 import fr.esgi.dto.request.RentalPropertyRequestPatchDto;
 import fr.esgi.dto.response.RentalPropertyDtoResponse;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 
 import java.util.Arrays;
 import java.util.List;

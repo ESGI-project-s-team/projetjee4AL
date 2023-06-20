@@ -1,7 +1,6 @@
 package fr.esgi.api;
 
 
-import com.google.gson.Gson;
 import fr.esgi.dto.request.RentalCarDtoRequest;
 import fr.esgi.dto.request.RentalCarRequestPatchDto;
 import fr.esgi.dto.response.RentalCarDtoResponse;
@@ -16,12 +15,8 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Arrays;
 import java.util.List;
 
 @Path("/rental-cars")

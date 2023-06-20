@@ -2,8 +2,6 @@ package fr.esgi.rent.sample;
 
 import fr.esgi.dto.request.RentalCarDtoRequest;
 import fr.esgi.dto.request.RentalCarRequestPatchDto;
-import fr.esgi.dto.request.RentalPropertyDtoRequest;
-import fr.esgi.dto.request.RentalPropertyRequestPatchDto;
 
 public class RentalCarDtoRequestSample {
 

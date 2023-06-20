@@ -2,9 +2,6 @@ package fr.esgi.rent.sample;
 
 import fr.esgi.dto.request.RentalPropertyDtoRequest;
 import fr.esgi.dto.request.RentalPropertyRequestPatchDto;
-import fr.esgi.dto.response.RentalPropertyDtoResponse;
-
-import java.util.List;
 
 public class RentalPropertyDtoRequestSample {
 

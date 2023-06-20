@@ -1,7 +1,6 @@
 package fr.esgi.rent.sample;
 
 import fr.esgi.dto.response.RentalCarDtoResponse;
-import fr.esgi.dto.response.RentalPropertyDtoResponse;
 
 import java.util.List;
 

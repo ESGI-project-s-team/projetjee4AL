@@ -1,15 +1,10 @@
 package fr.esgi.rent.api;
 
 import fr.esgi.api.RentalCarResource;
-import fr.esgi.api.RentalPropertyResource;
 import fr.esgi.dto.response.RentalCarDtoResponse;
-import fr.esgi.dto.response.RentalPropertyDtoResponse;
 import fr.esgi.exception.BadRequestRentalCarException;
-import fr.esgi.exception.BadRequestRentalPropertyException;
 import fr.esgi.exception.NotFoundRentalCarException;
-import fr.esgi.exception.NotFoundRentalPropertyException;
 import fr.esgi.mapper.RentalCarMapper;
-import fr.esgi.mapper.RentalPropertyMapper;
 import fr.esgi.service.RequesterService;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.Test;
@@ -28,10 +23,6 @@ import static fr.esgi.rent.sample.RentalCarDtoRequestSample.oneRentalCarDtoReque
 import static fr.esgi.rent.sample.RentalCarDtoRequestSample.oneRentalCarDtoRequestPatch;
 import static fr.esgi.rent.sample.RentalCarDtoResponseSample.oneRentalCarDto;
 import static fr.esgi.rent.sample.RentalCarDtoResponseSample.rentalCarDtoResponsesList;
-import static fr.esgi.rent.sample.RentalPropertyDtoRequestSample.oneRentalPropertyDtoRequest;
-import static fr.esgi.rent.sample.RentalPropertyDtoRequestSample.oneRentalPropertyDtoRequestPatch;
-import static fr.esgi.rent.sample.RentalPropertyDtoResponseSample.oneRentalPropertyDto;
-import static fr.esgi.rent.sample.RentalPropertyDtoResponseSample.rentalPropertyDtoResponsesList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -93,7 +84,7 @@ public class RentalCarResourceTest {
         when(requesterService.callGET(anyString())).thenReturn(httpResponse);
 
 
-        assertThrows(NotFoundRentalCarException.class, () -> {rentalCarResource.getRentalCarById(1);});
+        assertThrows(NotFoundRentalCarException.class, () -> rentalCarResource.getRentalCarById(1));
         verifyNoMoreInteractions(requesterService);
         verifyNoMoreInteractions(httpResponse);
     }
@@ -104,10 +95,9 @@ public class RentalCarResourceTest {
         when(requesterService.callPOST(anyString(), any())).thenReturn(httpResponse);
         when(rentalCarMapper.dtoRequestToString(oneRentalCarDtoRequest())).thenCallRealMethod();
 
-        Response response = rentalCarResource.createRentalCar(oneRentalCarDtoRequest());
-
-
-        assertEquals(201, response.getStatus());
+        try(Response response = rentalCarResource.createRentalCar(oneRentalCarDtoRequest())){
+            assertEquals(201, response.getStatus());
+        }
 
         verifyNoMoreInteractions(rentalCarMapper);
         verifyNoMoreInteractions(requesterService);
@@ -123,7 +113,7 @@ public class RentalCarResourceTest {
         when(rentalCarMapper.dtoRequestToString(oneRentalCarDtoRequest())).thenCallRealMethod();
 
 
-        assertThrows(BadRequestRentalCarException.class, () -> {rentalCarResource.createRentalCar(oneRentalCarDtoRequest());});
+        assertThrows(BadRequestRentalCarException.class, () -> rentalCarResource.createRentalCar(oneRentalCarDtoRequest()));
 
         verifyNoMoreInteractions(rentalCarMapper);
         verifyNoMoreInteractions(requesterService);
@@ -136,10 +126,9 @@ public class RentalCarResourceTest {
         when(requesterService.callPUT(anyString(), any())).thenReturn(httpResponse);
         when(rentalCarMapper.dtoRequestToString(oneRentalCarDtoRequest())).thenCallRealMethod();
 
-        Response response = rentalCarResource.updateRentalCar(1, oneRentalCarDtoRequest());
-
-
-        assertEquals(200, response.getStatus());
+        try(Response response = rentalCarResource.updateRentalCar(1, oneRentalCarDtoRequest())){
+            assertEquals(200, response.getStatus());
+        }
 
         verifyNoMoreInteractions(rentalCarMapper);
         verifyNoMoreInteractions(requesterService);
@@ -153,7 +142,7 @@ public class RentalCarResourceTest {
         when(rentalCarMapper.dtoRequestToString(oneRentalCarDtoRequest())).thenCallRealMethod();
 
 
-        assertThrows(BadRequestRentalCarException.class, () -> {rentalCarResource.updateRentalCar(1, oneRentalCarDtoRequest());});
+        assertThrows(BadRequestRentalCarException.class, () -> rentalCarResource.updateRentalCar(1, oneRentalCarDtoRequest()));
 
         verifyNoMoreInteractions(rentalCarMapper);
         verifyNoMoreInteractions(requesterService);
@@ -166,10 +155,9 @@ public class RentalCarResourceTest {
         when(requesterService.callPATCH(anyString(), any())).thenReturn(httpResponse);
         when(rentalCarMapper.patchDtoRequestToString(oneRentalCarDtoRequestPatch())).thenCallRealMethod();
 
-        Response response = rentalCarResource.patchRentalCar(1, oneRentalCarDtoRequestPatch());
-
-
-        assertEquals(200, response.getStatus());
+        try(Response response = rentalCarResource.patchRentalCar(1, oneRentalCarDtoRequestPatch())){
+            assertEquals(200, response.getStatus());
+        }
 
         verifyNoMoreInteractions(rentalCarMapper);
         verifyNoMoreInteractions(requesterService);
@@ -185,7 +173,7 @@ public class RentalCarResourceTest {
 
 
 
-        assertThrows(BadRequestRentalCarException.class, () -> {rentalCarResource.patchRentalCar(1, oneRentalCarDtoRequestPatch());});
+        assertThrows(BadRequestRentalCarException.class, () -> rentalCarResource.patchRentalCar(1, oneRentalCarDtoRequestPatch()));
 
         verifyNoMoreInteractions(rentalCarMapper);
         verifyNoMoreInteractions(requesterService);
@@ -201,7 +189,7 @@ public class RentalCarResourceTest {
 
 
 
-        assertThrows(NotFoundRentalCarException.class, () -> {rentalCarResource.patchRentalCar(1, oneRentalCarDtoRequestPatch());});
+        assertThrows(NotFoundRentalCarException.class, () -> rentalCarResource.patchRentalCar(1, oneRentalCarDtoRequestPatch()));
 
         verifyNoMoreInteractions(rentalCarMapper);
         verifyNoMoreInteractions(requesterService);

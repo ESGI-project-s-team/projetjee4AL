@@ -1,7 +1,6 @@
 package fr.esgi.rent.mapper;
 
 import fr.esgi.mapper.RentalCarMapper;
-import fr.esgi.mapper.RentalPropertyMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,12 +13,6 @@ import static fr.esgi.rent.sample.RentalCarDtoResponseSample.oneRentalCarDto;
 import static fr.esgi.rent.sample.RentalCarDtoResponseSample.rentalCarDtoResponsesList;
 import static fr.esgi.rent.sample.RentalCarMapperSample.dtoCarToString;
 import static fr.esgi.rent.sample.RentalCarMapperSample.patchDtoCarToString;
-import static fr.esgi.rent.sample.RentalPropertyDtoRequestSample.oneRentalPropertyDtoRequest;
-import static fr.esgi.rent.sample.RentalPropertyDtoRequestSample.oneRentalPropertyDtoRequestPatch;
-import static fr.esgi.rent.sample.RentalPropertyDtoResponseSample.oneRentalPropertyDto;
-import static fr.esgi.rent.sample.RentalPropertyDtoResponseSample.rentalPropertyDtoResponsesList;
-import static fr.esgi.rent.sample.RentalPropertyMapperSample.dtoPropertyToString;
-import static fr.esgi.rent.sample.RentalPropertyMapperSample.patchDtoPropertyToString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)

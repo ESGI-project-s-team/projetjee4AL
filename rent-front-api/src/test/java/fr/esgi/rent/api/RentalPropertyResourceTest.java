@@ -1,33 +1,21 @@
 package fr.esgi.rent.api;
 
-import com.google.gson.Gson;
 import fr.esgi.api.RentalPropertyResource;
 import fr.esgi.dto.response.RentalPropertyDtoResponse;
 import fr.esgi.exception.BadRequestRentalPropertyException;
 import fr.esgi.exception.NotFoundRentalPropertyException;
 import fr.esgi.mapper.RentalPropertyMapper;
 import fr.esgi.service.RequesterService;
-import jakarta.faces.context.ExceptionHandler;
-import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.ext.RuntimeDelegate;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Arrays;
 import java.util.List;
 
 import static fr.esgi.rent.sample.HttpResponseSample.rentalPropertyGetAllResponse;
@@ -36,7 +24,6 @@ import static fr.esgi.rent.sample.RentalPropertyDtoRequestSample.oneRentalProper
 import static fr.esgi.rent.sample.RentalPropertyDtoRequestSample.oneRentalPropertyDtoRequestPatch;
 import static fr.esgi.rent.sample.RentalPropertyDtoResponseSample.oneRentalPropertyDto;
 import static fr.esgi.rent.sample.RentalPropertyDtoResponseSample.rentalPropertyDtoResponsesList;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -98,7 +85,7 @@ public class RentalPropertyResourceTest {
         when(requesterService.callGET(anyString())).thenReturn(httpResponse);
 
 
-        assertThrows(NotFoundRentalPropertyException.class, () -> {rentalPropertyResource.getRentalPropertyById(1);});
+        assertThrows(NotFoundRentalPropertyException.class, () -> rentalPropertyResource.getRentalPropertyById(1));
         verifyNoMoreInteractions(requesterService);
         verifyNoMoreInteractions(httpResponse);
     }
@@ -109,15 +96,13 @@ public class RentalPropertyResourceTest {
         when(requesterService.callPOST(anyString(), any())).thenReturn(httpResponse);
         when(rentalPropertyMapper.dtoRequestToString(oneRentalPropertyDtoRequest())).thenCallRealMethod();
 
-        Response response = rentalPropertyResource.createRentalProperty(oneRentalPropertyDtoRequest());
-
-
-        assertEquals(201, response.getStatus());
+        try(Response response = rentalPropertyResource.createRentalProperty(oneRentalPropertyDtoRequest())){
+            assertEquals(201, response.getStatus());
+        }
 
         verifyNoMoreInteractions(rentalPropertyMapper);
         verifyNoMoreInteractions(requesterService);
         verifyNoMoreInteractions(httpResponse);
-
 
     }
 
@@ -128,7 +113,7 @@ public class RentalPropertyResourceTest {
         when(rentalPropertyMapper.dtoRequestToString(oneRentalPropertyDtoRequest())).thenCallRealMethod();
 
 
-        assertThrows(BadRequestRentalPropertyException.class, () -> {rentalPropertyResource.createRentalProperty(oneRentalPropertyDtoRequest());});
+        assertThrows(BadRequestRentalPropertyException.class, () -> rentalPropertyResource.createRentalProperty(oneRentalPropertyDtoRequest()));
 
         verifyNoMoreInteractions(rentalPropertyMapper);
         verifyNoMoreInteractions(requesterService);
@@ -141,10 +126,9 @@ public class RentalPropertyResourceTest {
         when(requesterService.callPUT(anyString(), any())).thenReturn(httpResponse);
         when(rentalPropertyMapper.dtoRequestToString(oneRentalPropertyDtoRequest())).thenCallRealMethod();
 
-        Response response = rentalPropertyResource.updateRentalProperty(1, oneRentalPropertyDtoRequest());
-
-
-        assertEquals(200, response.getStatus());
+        try(Response response = rentalPropertyResource.updateRentalProperty(1, oneRentalPropertyDtoRequest())){
+            assertEquals(200, response.getStatus());
+        }
 
         verifyNoMoreInteractions(rentalPropertyMapper);
         verifyNoMoreInteractions(requesterService);
@@ -158,7 +142,7 @@ public class RentalPropertyResourceTest {
         when(rentalPropertyMapper.dtoRequestToString(oneRentalPropertyDtoRequest())).thenCallRealMethod();
 
 
-        assertThrows(BadRequestRentalPropertyException.class, () -> {rentalPropertyResource.updateRentalProperty(1, oneRentalPropertyDtoRequest());});
+        assertThrows(BadRequestRentalPropertyException.class, () -> rentalPropertyResource.updateRentalProperty(1, oneRentalPropertyDtoRequest()));
 
         verifyNoMoreInteractions(rentalPropertyMapper);
         verifyNoMoreInteractions(requesterService);
@@ -171,10 +155,9 @@ public class RentalPropertyResourceTest {
         when(requesterService.callPATCH(anyString(), any())).thenReturn(httpResponse);
         when(rentalPropertyMapper.patchDtoRequestToString(oneRentalPropertyDtoRequestPatch())).thenCallRealMethod();
 
-        Response response = rentalPropertyResource.patchRentalProperty(1, oneRentalPropertyDtoRequestPatch());
-
-
-        assertEquals(200, response.getStatus());
+        try(Response response = rentalPropertyResource.patchRentalProperty(1, oneRentalPropertyDtoRequestPatch())){
+            assertEquals(200, response.getStatus());
+        }
 
         verifyNoMoreInteractions(rentalPropertyMapper);
         verifyNoMoreInteractions(requesterService);
@@ -190,7 +173,7 @@ public class RentalPropertyResourceTest {
 
 
 
-        assertThrows(BadRequestRentalPropertyException.class, () -> {rentalPropertyResource.patchRentalProperty(1, oneRentalPropertyDtoRequestPatch());});
+        assertThrows(BadRequestRentalPropertyException.class, () -> rentalPropertyResource.patchRentalProperty(1, oneRentalPropertyDtoRequestPatch()));
 
         verifyNoMoreInteractions(rentalPropertyMapper);
         verifyNoMoreInteractions(requesterService);
@@ -206,7 +189,7 @@ public class RentalPropertyResourceTest {
 
 
 
-        assertThrows(NotFoundRentalPropertyException.class, () -> {rentalPropertyResource.patchRentalProperty(1, oneRentalPropertyDtoRequestPatch());});
+        assertThrows(NotFoundRentalPropertyException.class, () -> rentalPropertyResource.patchRentalProperty(1, oneRentalPropertyDtoRequestPatch()));
 
         verifyNoMoreInteractions(rentalPropertyMapper);
         verifyNoMoreInteractions(requesterService);
