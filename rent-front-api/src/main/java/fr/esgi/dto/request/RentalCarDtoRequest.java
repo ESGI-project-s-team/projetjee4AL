@@ -5,8 +5,7 @@ import jakarta.validation.constraints.NotNull;
 public record RentalCarDtoRequest(
         @NotNull
         String brand,
-        @NotNull
-        Double model,
+        String model,
         @NotNull
         Double rentAmount,
         @NotNull

@@ -1,7 +1,5 @@
 package fr.esgi.dto.request;
 
-import fr.esgi.beans.EnergyClassification;
-import fr.esgi.beans.PropertyType;
 import jakarta.validation.constraints.NotNull;
 
 public record RentalPropertyDtoRequest(
@@ -20,15 +18,15 @@ public record RentalPropertyDtoRequest(
         @NotNull
         String town,
 
-        int numberOfBedrooms,
-        int floorNumber,
-        int numberOfFloors,
-        int constructionYear,
+        Integer numberOfBedrooms,
+        Integer floorNumber,
+        Integer numberOfFloors,
+        Integer constructionYear,
         String energyClassification,
-        boolean hasElevator,
-        boolean hasIntercom,
-        boolean hasBalcony,
-        boolean hasParkingSpace
+        Boolean hasElevator,
+        Boolean hasIntercom,
+        Boolean hasBalcony,
+        Boolean hasParkingSpace
 
 ) {
 }
